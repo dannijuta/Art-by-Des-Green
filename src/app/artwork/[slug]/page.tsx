@@ -6,6 +6,7 @@ import { ArtworkDetail } from '@/components/artwork/artwork-detail';
 import { ArtworkCard } from '@/components/artwork/artwork-card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { resolveShippingMethod, shippingMethodLabel } from '@/lib/shipping';
+import { isPayfastLive } from '@/lib/payfast-live';
 
 export async function generateMetadata(props: PageProps<'/artwork/[slug]'>): Promise<Metadata> {
   const { slug } = await props.params;
@@ -17,12 +18,13 @@ export async function generateMetadata(props: PageProps<'/artwork/[slug]'>): Pro
     : `Original oil painting by Des Green${artwork.category ? ` — ${artwork.category.name}` : ''}.`;
 
   return {
-    title: artwork.publicTitle,
+    title: artwork.seoTitle || artwork.publicTitle,
     description,
     alternates: { canonical: `/artwork/${artwork.slug}` },
     openGraph: {
-      title: artwork.publicTitle,
+      title: artwork.seoTitle || artwork.publicTitle,
       description,
+      url: `/artwork/${artwork.slug}`,
       images: artwork.primaryImagePath ? [artwork.primaryImagePath] : undefined,
     },
   };
@@ -42,6 +44,10 @@ export default async function ArtworkPage(props: PageProps<'/artwork/[slug]'>) {
   const artworkUrl = `${siteUrl}/artwork/${artwork.slug}`;
   const isPurchasable = artwork.availabilityStatus === 'available' && artwork.priceCents !== null;
   const shippingMethod = resolveShippingMethod(artwork, shippingSettings);
+  // Structured "Offer" data implies a live, working purchase flow — only
+  // publish it once PayFast is actually live, matching the honest pre-PayFast
+  // state used across the rest of the site.
+  const showOffer = isPurchasable && isPayfastLive();
 
   const visualArtworkJsonLd = {
     '@context': 'https://schema.org',
@@ -55,7 +61,7 @@ export default async function ArtworkPage(props: PageProps<'/artwork/[slug]'>) {
     height: artwork.heightCm ? { '@type': 'QuantitativeValue', value: artwork.heightCm, unitCode: 'CMT' } : undefined,
     creator: { '@type': 'Person', name: 'Des Green' },
     url: artworkUrl,
-    ...(isPurchasable && artwork.priceCents !== null
+    ...(showOffer && artwork.priceCents !== null
       ? {
           offers: {
             '@type': 'Offer',

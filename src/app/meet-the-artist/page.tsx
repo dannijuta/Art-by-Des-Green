@@ -7,6 +7,8 @@ import { SectionHeading } from '@/components/ui/section-heading';
 export const metadata: Metadata = {
   title: 'Meet the Artist',
   description: 'Meet Des Green, a South African oil painter based in East London.',
+  alternates: { canonical: '/meet-the-artist' },
+  openGraph: { url: '/meet-the-artist' },
 };
 
 export default async function MeetTheArtistPage() {

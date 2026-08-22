@@ -34,6 +34,14 @@ interface ArtworkRow {
   internal_sellability_tier: string | null;
   internal_selling_note: string | null;
   internal_notes: string | null;
+  internal_category_tag: string | null;
+  short_card_copy: string | null;
+  seo_title: string | null;
+  signed: boolean | null;
+  varnished: boolean | null;
+  certificate_of_authenticity: boolean | null;
+  title_needs_artist_approval: boolean;
+  copy_needs_artist_approval: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -45,7 +53,9 @@ const BASE_SELECT = `
     a.width_cm, a.height_cm, a.medium, a.surface, a.framed, a.price_cents,
     a.availability_status, a.publishing_status, a.is_featured, a.is_hero, a.display_order,
     a.primary_image_path, a.primary_image_width, a.primary_image_height, a.alt_text, a.shipping_method_override, a.admin_edited,
-    a.internal_launch_priority, a.internal_sellability_tier, a.internal_selling_note, a.internal_notes,
+    a.internal_launch_priority, a.internal_sellability_tier, a.internal_selling_note, a.internal_notes, a.internal_category_tag,
+    a.short_card_copy, a.seo_title, a.signed, a.varnished, a.certificate_of_authenticity,
+    a.title_needs_artist_approval, a.copy_needs_artist_approval,
     a.created_at, a.updated_at
   from artworks a
   left join categories c on c.id = a.category_id
@@ -88,11 +98,19 @@ function mapRow(row: ArtworkRow, images: ArtworkImage[] = []): ArtworkAdmin {
     additionalImages: images,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    shortCardCopy: row.short_card_copy,
+    seoTitle: row.seo_title,
+    signed: row.signed,
+    varnished: row.varnished,
+    certificateOfAuthenticity: row.certificate_of_authenticity,
     adminEdited: row.admin_edited,
     internalLaunchPriority: row.internal_launch_priority,
     internalSellabilityTier: row.internal_sellability_tier,
     internalSellingNote: row.internal_selling_note,
     internalNotes: row.internal_notes,
+    internalCategoryTag: row.internal_category_tag,
+    titleNeedsArtistApproval: row.title_needs_artist_approval,
+    copyNeedsArtistApproval: row.copy_needs_artist_approval,
   };
 }
 
@@ -104,6 +122,9 @@ export function toPublicArtwork(artwork: ArtworkAdmin): Artwork {
     internalSellabilityTier: _t,
     internalSellingNote: _n,
     internalNotes: _notes,
+    internalCategoryTag: _tag,
+    titleNeedsArtistApproval: _titleApproval,
+    copyNeedsArtistApproval: _copyApproval,
     ...publicFields
   } = artwork;
   return publicFields;
@@ -156,6 +177,16 @@ export async function listSoldWorks(): Promise<Artwork[]> {
   return rows.map((r) => toPublicArtwork(mapRow(r)));
 }
 
+/** Used to decide whether "Sold Work" appears in navigation — an empty Sold Work
+ * page falsely implies the artist has never sold anything, so it's hidden until
+ * at least one authentic sold record exists. */
+export async function hasSoldWorks(): Promise<boolean> {
+  const { rows } = await query<{ exists: boolean }>(
+    `select exists(select 1 from artworks where publishing_status = 'published' and availability_status = 'sold') as exists`
+  );
+  return rows[0]?.exists ?? false;
+}
+
 export async function listFeaturedArtworks(limit = 4): Promise<Artwork[]> {
   const sql = `${BASE_SELECT}
     where a.publishing_status = 'published' and a.is_featured = true
@@ -181,8 +212,9 @@ async function getImagesFor(artworkId: string): Promise<ArtworkImage[]> {
     alt_text: string | null;
     sort_order: number;
     is_primary: boolean;
+    image_role: ArtworkImage['role'];
   }>(
-    'select id, image_path, alt_text, sort_order, is_primary from artwork_images where artwork_id = $1 order by sort_order asc',
+    'select id, image_path, alt_text, sort_order, is_primary, image_role from artwork_images where artwork_id = $1 order by sort_order asc',
     [artworkId]
   );
   return rows.map((r) => ({
@@ -191,6 +223,7 @@ async function getImagesFor(artworkId: string): Promise<ArtworkImage[]> {
     altText: r.alt_text,
     sortOrder: r.sort_order,
     isPrimary: r.is_primary,
+    role: r.image_role,
   }));
 }
 
@@ -268,6 +301,7 @@ export async function getDashboardCounts() {
     available: 0,
     reserved: 0,
     sold: 0,
+    private_collection: 0,
   };
   for (const row of rows) {
     counts[row.availability_status] = Number(row.count);

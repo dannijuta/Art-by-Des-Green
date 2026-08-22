@@ -213,8 +213,11 @@ export default async function AdminSettingsPage() {
         <form action={updatePolicies} className="space-y-4">
           <label className="flex items-center gap-2 text-sm text-charcoal">
             <input type="checkbox" name="needsCompletion" defaultChecked={policies.needsCompletion} className="h-4 w-4 accent-clay" />
-            Show &quot;starter content — needs review&quot; notice on legal pages
+            Still needs a final legal review (private reminder only — not shown to visitors)
           </label>
+          <Field label="Last updated (shown publicly on each policy page)">
+            <input type="date" name="lastUpdated" defaultValue={policies.lastUpdated} className={inputClass} />
+          </Field>
           <Field label="Privacy Policy">
             <textarea name="privacyPolicy" rows={6} defaultValue={policies.privacyPolicy} className={inputClass} />
           </Field>

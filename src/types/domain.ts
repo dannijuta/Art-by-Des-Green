@@ -1,4 +1,10 @@
-export type AvailabilityStatus = 'draft' | 'gallery_only' | 'available' | 'reserved' | 'sold';
+export type AvailabilityStatus =
+  | 'draft'
+  | 'gallery_only'
+  | 'available'
+  | 'reserved'
+  | 'sold'
+  | 'private_collection';
 export type PublishingStatus = 'draft' | 'published' | 'archived';
 export type ShippingMethod = 'included' | 'flat_rate' | 'collection' | 'quote_required';
 
@@ -9,12 +15,15 @@ export interface Category {
   sortOrder: number;
 }
 
+export type ArtworkImageRole = 'detail' | 'signature' | 'side_angle' | 'lifestyle_illustrative';
+
 export interface ArtworkImage {
   id: string;
   imagePath: string;
   altText: string | null;
   sortOrder: number;
   isPrimary: boolean;
+  role: ArtworkImageRole;
 }
 
 export interface Artwork {
@@ -44,6 +53,15 @@ export interface Artwork {
   additionalImages: ArtworkImage[];
   createdAt: string;
   updatedAt: string;
+
+  /** Short teaser shown on gallery/card views; falls back to a truncated publicDescription. */
+  shortCardCopy: string | null;
+  /** Overrides the generated <title> for this artwork's page when set. */
+  seoTitle: string | null;
+  /** Trust facts — null means "not yet known," never assumed. */
+  signed: boolean | null;
+  varnished: boolean | null;
+  certificateOfAuthenticity: boolean | null;
 }
 
 /** Admin-only view — includes internal business fields. Never sent to public pages. */
@@ -53,6 +71,10 @@ export interface ArtworkAdmin extends Artwork {
   internalSellabilityTier: string | null;
   internalSellingNote: string | null;
   internalNotes: string | null;
+  /** The pre-consolidation category name (e.g. "Coastal / Waves"), kept for internal reference only. */
+  internalCategoryTag: string | null;
+  titleNeedsArtistApproval: boolean;
+  copyNeedsArtistApproval: boolean;
 }
 
 export interface ArtistProfileSettings {
@@ -107,6 +129,7 @@ export interface PoliciesSettings {
   shippingCollection: string;
   returnsRefunds: string;
   copyright: string;
+  lastUpdated: string;
 }
 
 export interface SeoSettings {

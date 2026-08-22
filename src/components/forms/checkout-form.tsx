@@ -8,7 +8,15 @@ import type { ShippingMethod } from '@/types/domain';
 
 const initialState: CheckoutFormState = { status: 'idle' };
 
-export function CheckoutForm({ artworkId, shippingMethod }: { artworkId: string; shippingMethod: ShippingMethod }) {
+export function CheckoutForm({
+  artworkId,
+  shippingMethod,
+  payfastLive,
+}: {
+  artworkId: string;
+  shippingMethod: ShippingMethod;
+  payfastLive: boolean;
+}) {
   const [state, formAction, pending] = useActionState(startCheckout, initialState);
   const needsAddress = shippingMethod === 'flat_rate' || shippingMethod === 'quote_required';
   const [country, setCountry] = useState('South Africa');
@@ -71,7 +79,8 @@ export function CheckoutForm({ artworkId, shippingMethod }: { artworkId: string;
       <div className="flex items-start gap-3">
         <input id="co-consent" name="consent" type="checkbox" required className="mt-1 h-4 w-4 accent-clay" />
         <label htmlFor="co-consent" className="text-sm text-charcoal-soft">
-          I agree to proceed with this purchase and understand this is a one-of-a-kind original artwork.
+          I agree to proceed with this{' '}
+          {payfastLive ? 'purchase' : 'purchase request'} and understand this is a one-of-a-kind original artwork.
         </label>
       </div>
       {state.fieldErrors?.consent && (
@@ -87,7 +96,13 @@ export function CheckoutForm({ artworkId, shippingMethod }: { artworkId: string;
       )}
 
       <Button type="submit" disabled={pending}>
-        {pending ? 'Reserving…' : shippingMethod === 'quote_required' ? 'Request Shipping Quote' : 'Continue to Payment'}
+        {pending
+          ? 'Reserving…'
+          : shippingMethod === 'quote_required'
+            ? 'Request Shipping Quote'
+            : payfastLive
+              ? 'Continue to Payment'
+              : 'Request to Purchase'}
       </Button>
     </form>
   );

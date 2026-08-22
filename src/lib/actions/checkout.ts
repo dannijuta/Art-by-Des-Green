@@ -9,6 +9,7 @@ import { getShippingSettings } from '@/lib/data/settings';
 import { createReservedOrder, releaseExpiredReservations } from '@/lib/data/orders';
 import { generateOrderNumber } from '@/lib/slug';
 import { sendEmail, escapeHtml } from '@/lib/email';
+import { isPayfastLive } from '@/lib/payfast-live';
 import type { Artwork } from '@/types/domain';
 
 export interface CheckoutFormState {
@@ -160,6 +161,31 @@ export async function startCheckout(
     }
 
     redirect(`/checkout/quote-requested/${result.orderId}`);
+  }
+
+  // Pre-PayFast state: only PayFast's generic sandbox credentials are
+  // configured, not Des's real merchant account, so a real visitor must never
+  // be sent to that checkout page. The artwork is still reserved (the
+  // one-of-a-kind protection is unaffected either way) — Des is notified to
+  // follow up and arrange payment directly.
+  if (!isPayfastLive()) {
+    const notifyTo = process.env.CONTACT_NOTIFICATION_EMAIL;
+    if (notifyTo) {
+      await sendEmail({
+        to: notifyTo,
+        subject: `Purchase request — order ${orderNumber}`,
+        html: `
+          <h2>New purchase request</h2>
+          <p><strong>Order:</strong> ${escapeHtml(orderNumber)}</p>
+          <p><strong>Artwork:</strong> ${escapeHtml(artwork.public_title)}</p>
+          <p><strong>Customer:</strong> ${escapeHtml(parsed.data.name)} — ${escapeHtml(parsed.data.email)}${parsed.data.phone ? ` — ${escapeHtml(parsed.data.phone)}` : ''}</p>
+          <p><strong>Total:</strong> R ${((totalCents ?? artwork.price_cents) / 100).toFixed(2)}</p>
+          ${shippingAddress ? `<p><strong>Address:</strong> ${escapeHtml(JSON.stringify(shippingAddress))}</p>` : ''}
+          <p>This artwork has been reserved for this customer. Reach out to arrange secure payment directly, then mark the order in the admin dashboard once paid.</p>
+        `,
+      });
+    }
+    redirect(`/checkout/reserved/${result.orderId}`);
   }
 
   redirect(`/checkout/pay/${result.orderId}`);

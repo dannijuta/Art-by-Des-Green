@@ -79,6 +79,7 @@ const FALLBACK_POLICIES: PoliciesSettings = {
   shippingCollection: '',
   returnsRefunds: '',
   copyright: '© Art by Des Green. All artwork and images remain the property of the artist. All rights reserved.',
+  lastUpdated: '',
 };
 
 const FALLBACK_SEO: SeoSettings = {

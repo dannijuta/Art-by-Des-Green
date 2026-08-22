@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Hero } from '@/components/home/hero';
@@ -5,6 +6,11 @@ import { ArtworkCard } from '@/components/artwork/artwork-card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { getHeroArtwork, listFeaturedArtworks, listCategories } from '@/lib/data/artworks';
 import { getHomepageCopy, getArtistProfile } from '@/lib/data/settings';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+  openGraph: { url: '/' },
+};
 
 export default async function HomePage() {
   const [hero, featured, categories, copy, artist] = await Promise.all([

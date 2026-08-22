@@ -4,7 +4,7 @@ import { getOrderById, getOrderItemArtworkId, releaseReservation } from '@/lib/d
 import { query } from '@/lib/db';
 import { SectionHeading } from '@/components/ui/section-heading';
 
-export const metadata = { title: 'Payment Cancelled' };
+export const metadata = { title: 'Payment Cancelled', robots: { index: false } };
 
 export default async function CheckoutCancelledPage(props: PageProps<'/checkout/cancelled/[orderId]'>) {
   const { orderId } = await props.params;
@@ -21,7 +21,7 @@ export default async function CheckoutCancelledPage(props: PageProps<'/checkout/
 
   return (
     <div className="mx-auto max-w-xl px-5 py-24 text-center sm:px-8">
-      <SectionHeading title="Payment Cancelled" />
+      <SectionHeading as="h1" title="Payment Cancelled" />
       <p className="mt-4 text-charcoal-soft">
         No payment was taken and your reservation on this artwork has been released, so it&apos;s available for
         anyone to purchase again.

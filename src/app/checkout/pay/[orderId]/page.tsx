@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 import { payfastProvider } from '@/lib/payments/payfast';
 import { SectionHeading } from '@/components/ui/section-heading';
 
-export const metadata = { title: 'Redirecting to secure payment' };
+export const metadata = { title: 'Redirecting to secure payment', robots: { index: false } };
 
 export default async function CheckoutPayPage(props: PageProps<'/checkout/pay/[orderId]'>) {
   const { orderId } = await props.params;
@@ -42,7 +42,7 @@ export default async function CheckoutPayPage(props: PageProps<'/checkout/pay/[o
 
   return (
     <div className="mx-auto max-w-lg px-5 py-24 text-center sm:px-8">
-      <SectionHeading title="Redirecting to secure payment…" />
+      <SectionHeading as="h1" title="Redirecting to secure payment…" />
       <p className="mt-4 text-sm text-charcoal-soft">
         You&apos;re being taken to PayFast&apos;s secure payment page. This website never sees or stores your card
         details.

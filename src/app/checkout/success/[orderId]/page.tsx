@@ -4,7 +4,7 @@ import { getOrderById } from '@/lib/data/orders';
 import { formatZAR } from '@/lib/money';
 import { SectionHeading } from '@/components/ui/section-heading';
 
-export const metadata = { title: 'Payment Status' };
+export const metadata = { title: 'Payment Status', robots: { index: false } };
 
 export default async function CheckoutSuccessPage(props: PageProps<'/checkout/success/[orderId]'>) {
   const { orderId } = await props.params;
@@ -15,7 +15,7 @@ export default async function CheckoutSuccessPage(props: PageProps<'/checkout/su
 
   return (
     <div className="mx-auto max-w-xl px-5 py-24 text-center sm:px-8">
-      <SectionHeading title={confirmed ? 'Payment Confirmed' : 'Confirming Your Payment'} />
+      <SectionHeading as="h1" title={confirmed ? 'Payment Confirmed' : 'Confirming Your Payment'} />
 
       {confirmed ? (
         <>

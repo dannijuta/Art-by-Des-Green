@@ -1,7 +1,7 @@
 import { getPolicies } from '@/lib/data/settings';
 import { PolicyPage } from '@/components/legal/policy-page';
 
-export const metadata = { title: 'Shipping & Collection' };
+export const metadata = { title: 'Shipping & Collection', alternates: { canonical: '/legal/shipping-and-collection' } };
 
 export default async function ShippingAndCollectionPage() {
   const policies = await getPolicies();
@@ -9,7 +9,7 @@ export default async function ShippingAndCollectionPage() {
     <PolicyPage
       title="Shipping & Collection"
       content={policies.shippingCollection}
-      needsCompletion={policies.needsCompletion}
+      lastUpdated={policies.lastUpdated}
     />
   );
 }

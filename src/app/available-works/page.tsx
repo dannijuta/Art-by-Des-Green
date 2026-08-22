@@ -6,6 +6,8 @@ import { SectionHeading } from '@/components/ui/section-heading';
 export const metadata: Metadata = {
   title: 'Available Works',
   description: 'Original oil paintings currently available to purchase from South African artist Des Green.',
+  alternates: { canonical: '/available-works' },
+  openGraph: { url: '/available-works' },
 };
 
 export default async function AvailableWorksPage() {
@@ -13,7 +15,7 @@ export default async function AvailableWorksPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
-      <SectionHeading eyebrow="Originals for Sale" title="Available Works" />
+      <SectionHeading as="h1" eyebrow="Originals for Sale" title="Available Works" />
       <p className="mt-4 max-w-2xl text-base text-charcoal-soft">
         Every piece here is an original, one-of-a-kind painting, ready to find a new home. Once a painting sells it
         is removed from this page.

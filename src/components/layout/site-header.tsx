@@ -5,16 +5,19 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { ArtistProfileSettings } from '@/types/domain';
 
-const NAV_LINKS = [
+const BASE_NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/meet-the-artist', label: 'About the Artist' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/available-works', label: 'Available Works' },
-  { href: '/sold-work', label: 'Sold Work' },
   { href: '/contact', label: 'Contact' },
 ];
+const SOLD_WORK_LINK = { href: '/sold-work', label: 'Sold Work' };
 
-export function SiteHeader({ artist }: { artist: ArtistProfileSettings }) {
+export function SiteHeader({ artist, showSoldWork }: { artist: ArtistProfileSettings; showSoldWork: boolean }) {
+  const NAV_LINKS = showSoldWork
+    ? [...BASE_NAV_LINKS.slice(0, 4), SOLD_WORK_LINK, ...BASE_NAV_LINKS.slice(4)]
+    : BASE_NAV_LINKS;
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const [lastPathname, setLastPathname] = useState(pathname);

@@ -3,6 +3,7 @@ import type { AvailabilityStatus } from '@/types/domain';
 const LABELS: Partial<Record<AvailabilityStatus, string>> = {
   sold: 'Sold',
   reserved: 'Reserved',
+  private_collection: 'Private Collection',
 };
 
 export function AvailabilityBadge({ status }: { status: AvailabilityStatus }) {

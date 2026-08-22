@@ -4,6 +4,7 @@ import './globals.css';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { getSeoSettings, getArtistProfile, getContactSettings } from '@/lib/data/settings';
+import { hasSoldWorks } from '@/lib/data/artworks';
 
 const playfair = Playfair_Display({
   variable: '--font-playfair',
@@ -50,7 +51,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
-  const [artist, contact] = await Promise.all([getArtistProfile(), getContactSettings()]);
+  const [artist, contact, showSoldWork] = await Promise.all([
+    getArtistProfile(),
+    getContactSettings(),
+    hasSoldWorks(),
+  ]);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   const personJsonLd = {
@@ -79,11 +84,11 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <SiteHeader artist={artist} />
+        <SiteHeader artist={artist} showSoldWork={showSoldWork} />
         <main id="main-content" className="flex-1">
           {children}
         </main>
-        <SiteFooter artist={artist} contact={contact} />
+        <SiteFooter artist={artist} contact={contact} showSoldWork={showSoldWork} />
       </body>
     </html>
   );

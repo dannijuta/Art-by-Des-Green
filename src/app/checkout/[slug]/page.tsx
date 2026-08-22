@@ -8,8 +8,9 @@ import { resolveShippingMethod, shippingMethodLabel } from '@/lib/shipping';
 import { formatZAR } from '@/lib/money';
 import { CheckoutForm } from '@/components/forms/checkout-form';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { isPayfastLive } from '@/lib/payfast-live';
 
-export const metadata: Metadata = { title: 'Checkout' };
+export const metadata: Metadata = { title: 'Checkout', robots: { index: false } };
 
 export default async function CheckoutStartPage(props: PageProps<'/checkout/[slug]'>) {
   const { slug } = await props.params;
@@ -19,7 +20,7 @@ export default async function CheckoutStartPage(props: PageProps<'/checkout/[slu
   if (artwork.availabilityStatus !== 'available') {
     return (
       <div className="mx-auto max-w-2xl px-5 py-20 text-center sm:px-8">
-        <SectionHeading title="No longer available" />
+        <SectionHeading as="h1" title="No longer available" />
         <p className="mt-4 text-charcoal-soft">
           {artwork.publicTitle} is no longer available for purchase — it may have just sold or been reserved.
         </p>
@@ -33,10 +34,15 @@ export default async function CheckoutStartPage(props: PageProps<'/checkout/[slu
   const shippingSettings = await getShippingSettings();
   const method = resolveShippingMethod(artwork, shippingSettings);
   const shippingLabel = shippingMethodLabel(method, shippingSettings);
+  const payfastLive = isPayfastLive();
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8">
-      <SectionHeading eyebrow="Secure Checkout" title="Acquire This Artwork" />
+      <SectionHeading
+        as="h1"
+        eyebrow={payfastLive ? 'Secure Checkout' : 'Purchase Request'}
+        title={payfastLive ? 'Acquire This Artwork' : 'Request to Purchase'}
+      />
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_1.3fr]">
         <div>
@@ -79,7 +85,7 @@ export default async function CheckoutStartPage(props: PageProps<'/checkout/[slu
         </div>
 
         <div>
-          <CheckoutForm artworkId={artwork.id} shippingMethod={method} />
+          <CheckoutForm artworkId={artwork.id} shippingMethod={method} payfastLive={payfastLive} />
         </div>
       </div>
     </div>

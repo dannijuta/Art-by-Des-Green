@@ -6,6 +6,8 @@ import { getArtistProfile } from '@/lib/data/settings';
 export const metadata: Metadata = {
   title: 'Commission an Artwork',
   description: 'Commission an original oil painting from South African artist Des Green.',
+  alternates: { canonical: '/commissions' },
+  openGraph: { url: '/commissions' },
 };
 
 export default async function CommissionsPage() {
@@ -14,6 +16,7 @@ export default async function CommissionsPage() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
       <SectionHeading
+        as="h1"
         eyebrow={artist.commissionsOpen ? 'Commissions Open' : 'Commissions'}
         title="Commissions Are Open"
       />

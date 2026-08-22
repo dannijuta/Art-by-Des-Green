@@ -8,6 +8,8 @@ import { FacebookIcon, InstagramIcon, MailIcon, PhoneIcon } from '@/components/i
 export const metadata: Metadata = {
   title: 'Contact',
   description: 'Get in touch with South African artist Des Green for artwork enquiries, availability, or commissions.',
+  alternates: { canonical: '/contact' },
+  openGraph: { url: '/contact' },
 };
 
 export default async function ContactPage(props: PageProps<'/contact'>) {
@@ -19,7 +21,7 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8">
-      <SectionHeading eyebrow="Get in Touch" title="Get in Touch" />
+      <SectionHeading as="h1" eyebrow="Get in Touch" title="Get in Touch" />
       <p className="mt-4 max-w-2xl text-base text-charcoal-soft">
         For artwork enquiries, commissions, availability or collection questions, you are welcome to contact Des
         directly.

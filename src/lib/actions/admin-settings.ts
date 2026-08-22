@@ -95,6 +95,7 @@ export async function updatePolicies(formData: FormData) {
     shippingCollection: String(formData.get('shippingCollection') || ''),
     returnsRefunds: String(formData.get('returnsRefunds') || ''),
     copyright: String(formData.get('copyright') || ''),
+    lastUpdated: String(formData.get('lastUpdated') || ''),
   });
   revalidatePath('/legal', 'layout');
   revalidatePath('/admin/settings');

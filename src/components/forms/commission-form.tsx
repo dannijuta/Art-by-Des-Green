@@ -94,6 +94,10 @@ export function CommissionForm() {
           accept="image/jpeg,image/png,image/webp"
           className="block w-full text-sm text-charcoal-soft file:mr-4 file:border file:border-border file:bg-cream file:px-3 file:py-2 file:text-sm file:text-charcoal"
         />
+        <p className="mt-1.5 text-xs text-charcoal-soft">
+          JPEG, PNG or WebP, up to 15MB. Used only to understand your commission idea, and kept only as long as
+          needed to discuss and complete it with you.
+        </p>
       </FormField>
 
       <FormField

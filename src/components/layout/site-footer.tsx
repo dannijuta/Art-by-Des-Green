@@ -2,7 +2,15 @@ import Link from 'next/link';
 import type { ArtistProfileSettings, ContactSettings } from '@/types/domain';
 import { FacebookIcon, InstagramIcon, MailIcon } from '@/components/icons/social';
 
-export function SiteFooter({ artist, contact }: { artist: ArtistProfileSettings; contact: ContactSettings }) {
+export function SiteFooter({
+  artist,
+  contact,
+  showSoldWork,
+}: {
+  artist: ArtistProfileSettings;
+  contact: ContactSettings;
+  showSoldWork: boolean;
+}) {
   const year = new Date().getFullYear();
 
   return (
@@ -21,7 +29,9 @@ export function SiteFooter({ artist, contact }: { artist: ArtistProfileSettings;
             <li><Link href="/meet-the-artist" className="hover:text-clay-dark">About the Artist</Link></li>
             <li><Link href="/gallery" className="hover:text-clay-dark">Gallery</Link></li>
             <li><Link href="/available-works" className="hover:text-clay-dark">Available Works</Link></li>
-            <li><Link href="/sold-work" className="hover:text-clay-dark">Sold Work</Link></li>
+            {showSoldWork && (
+              <li><Link href="/sold-work" className="hover:text-clay-dark">Sold Work</Link></li>
+            )}
             <li><Link href="/contact" className="hover:text-clay-dark">Contact</Link></li>
           </ul>
         </nav>

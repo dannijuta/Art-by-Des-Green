@@ -2,12 +2,31 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Artwork } from '@/types/domain';
 import { formatZAR } from '@/lib/money';
+import { isPayfastLive } from '@/lib/payfast-live';
 import { SpecsList } from './specs-list';
+import { TrustFacts } from './trust-facts';
 import { AvailabilityBadge } from './availability-badge';
 import { LinkButton } from '@/components/ui/button';
 
+function statusMessage(artwork: Artwork): string | null {
+  switch (artwork.availabilityStatus) {
+    case 'sold':
+      return 'This painting has been sold.';
+    case 'reserved':
+      return 'This painting is currently reserved.';
+    case 'private_collection':
+      return 'This painting is part of a private collection and is not for sale.';
+    case 'gallery_only':
+      return artwork.priceCents === null ? 'Gallery Only — available on private enquiry.' : null;
+    default:
+      return null;
+  }
+}
+
 export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; compact?: boolean }) {
   const isPurchasable = artwork.availabilityStatus === 'available' && artwork.priceCents !== null;
+  const message = statusMessage(artwork);
+  const payfastLive = isPayfastLive();
 
   return (
     <div className={compact ? 'grid gap-6' : 'grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14'}>
@@ -44,14 +63,17 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         {isPurchasable && artwork.priceCents !== null && (
           <p className="mt-4 text-2xl text-clay-dark">{formatZAR(artwork.priceCents)}</p>
         )}
-        {artwork.availabilityStatus === 'sold' && <p className="mt-4 text-sm text-charcoal-soft">This painting has been sold.</p>}
-        {artwork.availabilityStatus === 'reserved' && (
-          <p className="mt-4 text-sm text-charcoal-soft">This painting is currently reserved.</p>
-        )}
+        {message && <p className="mt-4 text-sm text-charcoal-soft">{message}</p>}
 
         <div className="mt-6">
           <SpecsList artwork={artwork} />
         </div>
+
+        {(artwork.signed !== null || artwork.varnished !== null || artwork.certificateOfAuthenticity !== null) && (
+          <div className="mt-4">
+            <TrustFacts artwork={artwork} />
+          </div>
+        )}
 
         {artwork.publicDescription && (
           <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-soft">{artwork.publicDescription}</p>
@@ -60,7 +82,7 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         <div className="mt-8 flex flex-wrap gap-4">
           {isPurchasable ? (
             <LinkButton href={`/checkout/${artwork.slug}`} variant="primary">
-              Acquire This Artwork
+              {payfastLive ? 'Acquire This Artwork' : 'Request to Purchase'}
             </LinkButton>
           ) : null}
           <LinkButton
@@ -73,7 +95,9 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
 
         {isPurchasable && (
           <p className="mt-4 text-xs text-charcoal-soft">
-            Secure payment through PayFast. No card details are stored on this website.
+            {payfastLive
+              ? 'Secure payment through PayFast. No card details are stored on this website.'
+              : 'Payment will be arranged securely once your shipping or collection details have been confirmed.'}
           </p>
         )}
 

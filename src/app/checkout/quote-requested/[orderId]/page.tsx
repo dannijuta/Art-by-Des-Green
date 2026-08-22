@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getOrderById } from '@/lib/data/orders';
 import { SectionHeading } from '@/components/ui/section-heading';
 
-export const metadata = { title: 'Shipping Quote Requested' };
+export const metadata = { title: 'Shipping Quote Requested', robots: { index: false } };
 
 export default async function QuoteRequestedPage(props: PageProps<'/checkout/quote-requested/[orderId]'>) {
   const { orderId } = await props.params;
@@ -12,7 +12,7 @@ export default async function QuoteRequestedPage(props: PageProps<'/checkout/quo
 
   return (
     <div className="mx-auto max-w-xl px-5 py-24 text-center sm:px-8">
-      <SectionHeading title="Shipping Quote Requested" />
+      <SectionHeading as="h1" title="Shipping Quote Requested" />
       <p className="mt-4 text-charcoal-soft">
         Thank you — this artwork has been reserved for you while Des prepares a shipping quote for your address.
         You&apos;ll receive an email with the shipping cost and a secure payment link shortly.
