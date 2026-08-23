@@ -132,6 +132,29 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
       'artwork',
       id,
     ]);
+
+    // Availability status alone doesn't guarantee the painting is bookable
+    // again: the one-of-one guarantee is enforced by a separate active
+    // inventory_reservations row (see createReservedOrder), which this form
+    // never otherwise touches. Without this, manually clearing a ghosted
+    // buyer's "Reserved" status back to "Available" leaves that row behind,
+    // and the next real buyer's request silently fails as "already reserved"
+    // even though the site shows the piece as available.
+    if (d.availabilityStatus !== 'reserved') {
+      const released = await query<{ order_id: string }>(
+        `update inventory_reservations set status = 'released'
+         where artwork_id = $1 and status = 'active'
+         returning order_id`,
+        [id]
+      );
+      for (const row of released.rows) {
+        await query(
+          `update orders set status = 'cancelled' where id = $1 and status in ('reserved','quote_required','awaiting_payment')`,
+          [row.order_id]
+        );
+      }
+    }
+
     return { status: 'idle' };
   }
 
