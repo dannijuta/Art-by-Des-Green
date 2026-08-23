@@ -14,6 +14,15 @@ const nextConfig: NextConfig = {
       ? [{ protocol: 'https', hostname: supabaseHostname, pathname: '/storage/v1/object/public/**' }]
       : [],
   },
+  experimental: {
+    serverActions: {
+      // Admin artwork/commission image uploads validate up to 15MB
+      // (src/lib/storage.ts) — this must be at least that, or a real phone
+      // photo gets rejected by Next.js itself before that check ever runs.
+      // Next.js defaults this to 1MB.
+      bodySizeLimit: '16mb',
+    },
+  },
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     return [
