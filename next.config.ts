@@ -1,9 +1,18 @@
 import type { NextConfig } from 'next';
 
+// Admin-uploaded artwork/commission images are stored in Supabase Storage,
+// a different origin from the site itself — both next/image and the CSP
+// below need to explicitly trust it or uploaded images silently fail to
+// display after a successful upload.
+const supabaseHostname = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE_URL).hostname : undefined;
+
 const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
     formats: ['image/avif', 'image/webp'],
+    remotePatterns: supabaseHostname
+      ? [{ protocol: 'https', hostname: supabaseHostname, pathname: '/storage/v1/object/public/**' }]
+      : [],
   },
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
@@ -24,7 +33,7 @@ const nextConfig: NextConfig = {
               `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob:",
+              `img-src 'self' data: blob:${supabaseHostname ? ` https://${supabaseHostname}` : ''}`,
               `connect-src 'self'${isDev ? ' ws://localhost:* ws://127.0.0.1:*' : ''}`,
               "frame-src https://www.payfast.co.za https://sandbox.payfast.co.za",
               "form-action 'self' https://www.payfast.co.za https://sandbox.payfast.co.za",
