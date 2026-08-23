@@ -138,7 +138,12 @@ export function ArtworkForm({
         <TextInput id="altText" name="altText" type="text" defaultValue={artwork?.altText ?? ''} />
       </FormField>
 
-      <FormField label={artwork ? 'Replace image' : 'Image'} htmlFor="image" optional={Boolean(artwork)}>
+      <FormField
+        label={artwork ? 'Replace image' : 'Image'}
+        htmlFor="image"
+        optional={Boolean(artwork)}
+        error={state.fieldErrors?.image}
+      >
         {artwork?.primaryImagePath && (
           <div className="relative mb-3 h-32 w-32 overflow-hidden bg-parchment">
             <Image src={artwork.primaryImagePath} alt="" fill className="object-cover" />
@@ -149,8 +154,12 @@ export function ArtworkForm({
           name="image"
           type="file"
           accept="image/jpeg,image/png,image/webp"
+          required={!artwork}
           className="block w-full text-sm text-charcoal-soft file:mr-4 file:border file:border-border file:bg-cream file:px-3 file:py-2 file:text-sm file:text-charcoal"
         />
+        {!artwork && (
+          <p className="mt-1.5 text-xs text-charcoal-soft">A photo is required when adding a new artwork.</p>
+        )}
       </FormField>
 
       {state.status === 'error' && state.message && (

@@ -59,7 +59,17 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
   let imageWidth: number | null = null;
   let imageHeight: number | null = null;
   const imageFile = formData.get('image');
-  if (imageFile instanceof File && imageFile.size > 0) {
+  const hasImageFile = imageFile instanceof File && imageFile.size > 0;
+
+  if (!id && !hasImageFile) {
+    return {
+      status: 'error',
+      message: 'Please choose a photo before saving a new artwork.',
+      fieldErrors: { image: 'Please choose a photo for this artwork.' },
+    };
+  }
+
+  if (hasImageFile) {
     try {
       const uploaded = await uploadArtworkImage(imageFile);
       if (uploaded) {
