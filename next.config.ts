@@ -44,8 +44,15 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               `img-src 'self' data: blob:${supabaseHostname ? ` https://${supabaseHostname}` : ''}`,
               `connect-src 'self'${isDev ? ' ws://localhost:* ws://127.0.0.1:*' : ''}`,
-              "frame-src https://www.payfast.co.za https://sandbox.payfast.co.za",
-              "form-action 'self' https://www.payfast.co.za https://sandbox.payfast.co.za",
+              // PayFast's own checkout flow redirects across several of its
+              // own subdomains after the initial form POST (e.g. away from
+              // www.payfast.co.za mid-transaction) — Chrome's CSP re-checks
+              // form-action on every hop of that redirect, not just the
+              // first, so scoping this to exact subdomains breaks payment
+              // partway through. Wildcarding payfast.co.za keeps this to
+              // PayFast's own domain rather than opening it up generally.
+              "frame-src https://*.payfast.co.za https://payfast.co.za",
+              "form-action 'self' https://*.payfast.co.za https://payfast.co.za",
               "frame-ancestors 'none'",
               "base-uri 'self'",
             ].join('; '),
