@@ -82,7 +82,7 @@ export class PayfastProvider implements PaymentProvider {
       if (key === 'signature') break;
       orderedPairsBeforeSignature.push([key, value]);
     }
-    const paramString = toParamString(orderedPairsBeforeSignature, config.passphrase);
+    const paramString = toParamString(orderedPairsBeforeSignature, config.passphrase, true);
     const expectedSignature = md5(paramString);
     const signatureValid = dataObj.signature === expectedSignature;
     if (!signatureValid) reasons.push('signature_mismatch');

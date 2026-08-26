@@ -12,11 +12,22 @@ export function phpUrlEncode(value: string): string {
     .replace(/%20/g, '+');
 }
 
-/** Builds the exact `key=value&key=value...` string PayFast expects, preserving insertion order. */
-export function toParamString(pairs: Array<[string, string]>, passphrase?: string): string {
+/**
+ * Builds the exact `key=value&key=value...` string PayFast expects, preserving
+ * insertion order.
+ *
+ * `keepEmpty` must be false (the default) when *building* our own outbound
+ * payment request — PayFast's docs say to omit optional/empty fields there.
+ * It must be true when *validating* an incoming ITN: PayFast's notification
+ * body includes several always-present fields (custom_str1-5, custom_int1-5)
+ * with empty values, and PayFast's own signature includes them — stripping
+ * them out before re-computing the signature makes every real notification
+ * fail validation, even though the payment itself is genuine.
+ */
+export function toParamString(pairs: Array<[string, string]>, passphrase?: string, keepEmpty = false): string {
   const parts = pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '')
-    .map(([k, v]) => `${k}=${phpUrlEncode(String(v).trim())}`);
+    .filter(([, v]) => keepEmpty || (v !== undefined && v !== null && v !== ''))
+    .map(([k, v]) => `${k}=${phpUrlEncode(String(v ?? '').trim())}`);
   let str = parts.join('&');
   if (passphrase) {
     str += `&passphrase=${phpUrlEncode(passphrase.trim())}`;

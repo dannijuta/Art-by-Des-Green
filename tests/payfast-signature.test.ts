@@ -80,6 +80,47 @@ test('round trip: building a payment form then re-deriving the signature from it
   assert.equal(recomputed, signature);
 });
 
+test('toParamString with keepEmpty=true includes blank fields (real ITN bodies always send custom_str1-5/custom_int1-5 blank)', () => {
+  const pairs: Array<[string, string]> = [
+    ['merchant_id', '10000100'],
+    ['amount_gross', '500.00'],
+    ['custom_str1', ''],
+    ['custom_str2', ''],
+    ['name_first', 'Test'],
+  ];
+  const str = toParamString(pairs, 'jt7NOE43FZPn', true);
+  assert.equal(
+    str,
+    'merchant_id=10000100&amount_gross=500.00&custom_str1=&custom_str2=&name_first=Test&passphrase=jt7NOE43FZPn'
+  );
+});
+
+test('regression: validating a real PayFast ITN requires keepEmpty=true, or a genuine payment is wrongly rejected', () => {
+  // Captured verbatim from a real live PayFast transaction (order
+  // ADG-20260826-8314, R500.00) that was incorrectly rejected as
+  // "signature_mismatch" before this fix, because custom_str1-5/custom_int1-5
+  // were present-but-blank in the notification and PayFast's own signature
+  // includes them, while our validation was stripping blanks before
+  // recomputing the signature.
+  const rawBody =
+    'm_payment_id=ADG-20260826-8314&pf_payment_id=323621605&payment_status=COMPLETE&item_name=Gulls+Above+the+Crashing+Surf&item_description=Original+painting+%E2%80%94+order+ADG-20260826-8314&amount_gross=500.00&amount_fee=-20.70&amount_net=479.30&custom_str1=&custom_str2=&custom_str3=&custom_str4=&custom_str5=&custom_int1=&custom_int2=&custom_int3=&custom_int4=&custom_int5=&name_first=Danielle&name_last=Juta&email_address=xxdaniellejutaxx%40gmail.com&merchant_id=15307862&signature=8d214cc1d19b2b03f09f01043fb5f628';
+  const receivedSignature = '8d214cc1d19b2b03f09f01043fb5f628';
+  const passphrase = '3aTs0m3Cak3yay';
+
+  const entries = [...new URLSearchParams(rawBody).entries()];
+  const beforeSignature: Array<[string, string]> = [];
+  for (const [k, v] of entries) {
+    if (k === 'signature') break;
+    beforeSignature.push([k, v]);
+  }
+
+  const correct = md5(toParamString(beforeSignature, passphrase, true));
+  assert.equal(correct, receivedSignature, 'keepEmpty=true must reproduce PayFast’s real signature');
+
+  const buggy = md5(toParamString(beforeSignature, passphrase, false));
+  assert.notEqual(buggy, receivedSignature, 'keepEmpty=false is the bug this test guards against — it must NOT match');
+});
+
 test('isKnownPayfastIp recognises documented PayFast ranges', () => {
   assert.equal(isKnownPayfastIp('197.97.145.150'), true); // inside 197.97.145.144/28
   assert.equal(isKnownPayfastIp('144.126.193.139'), true); // exact single IP
