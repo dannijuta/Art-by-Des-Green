@@ -40,7 +40,7 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
               height={artwork.primaryImageHeight ?? 1400}
               sizes={compact ? '90vw' : '(min-width: 1024px) 55vw, 90vw'}
               className="h-auto w-full object-contain"
-              quality={90}
+              quality={75}
               priority={compact}
             />
           )}

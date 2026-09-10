@@ -8,7 +8,14 @@ const supabaseHostname = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [75, 90],
+    // A single quality tier keeps every image request on the site sharing
+    // the same cached variants — Vercel's free image-optimization quota is
+    // billed per distinct (url, width, quality) combination, and a second
+    // quality tier used in only one or two places (the lightbox, the detail
+    // page hero) was quietly doubling the number of variants generated for
+    // no visible benefit, and started returning 402s once the monthly quota
+    // was used up.
+    qualities: [75],
     formats: ['image/avif', 'image/webp'],
     remotePatterns: supabaseHostname
       ? [{ protocol: 'https', hostname: supabaseHostname, pathname: '/storage/v1/object/public/**' }]
