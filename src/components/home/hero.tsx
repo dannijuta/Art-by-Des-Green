@@ -39,6 +39,7 @@ export function Hero({ hero, copy }: { hero: Artwork | null; copy: HomepageCopyS
                 sizes="(min-width: 1024px) 45vw, 90vw"
                 className="object-contain"
                 priority
+                unoptimized
               />
             </div>
           </div>

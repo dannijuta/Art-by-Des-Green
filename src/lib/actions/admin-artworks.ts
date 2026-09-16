@@ -74,11 +74,8 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
       const uploaded = await uploadArtworkImage(imageFile);
       if (uploaded) {
         imagePath = uploaded.publicUrl;
-        const sharpModule = await import('sharp');
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const metadata = await sharpModule.default(buffer).metadata();
-        imageWidth = metadata.width ?? null;
-        imageHeight = metadata.height ?? null;
+        imageWidth = uploaded.width;
+        imageHeight = uploaded.height;
       } else {
         return {
           status: 'error',

@@ -38,10 +38,9 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
               alt={artwork.altText || artwork.publicTitle}
               width={artwork.primaryImageWidth ?? 1200}
               height={artwork.primaryImageHeight ?? 1400}
-              sizes={compact ? '90vw' : '(min-width: 1024px) 55vw, 90vw'}
               className="h-auto w-full object-contain"
-              quality={75}
               priority={compact}
+              unoptimized
             />
           )}
         </div>

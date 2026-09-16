@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Artwork } from '@/types/domain';
 import { formatZAR } from '@/lib/money';
+import { artworkThumbPath } from '@/lib/image-paths';
 import { AvailabilityBadge } from './availability-badge';
 
 export function ArtworkCard({
@@ -25,13 +26,13 @@ export function ArtworkCard({
       <div className="relative overflow-hidden bg-parchment">
         {artwork.primaryImagePath && (
           <Image
-            src={artwork.primaryImagePath}
+            src={artworkThumbPath(artwork.primaryImagePath)}
             alt={artwork.altText || artwork.publicTitle}
             width={width}
             height={height}
-            sizes="(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 90vw"
             className="h-auto w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.015]"
             priority={priority}
+            unoptimized
           />
         )}
         {artwork.availabilityStatus !== 'available' && (

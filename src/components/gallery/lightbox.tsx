@@ -104,7 +104,7 @@ export function Lightbox({
               fill
               sizes="90vw"
               className="object-contain"
-              quality={75}
+              unoptimized
             />
           )}
         </div>

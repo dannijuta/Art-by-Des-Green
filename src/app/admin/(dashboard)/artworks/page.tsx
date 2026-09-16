@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { listAllArtworksAdmin } from '@/lib/data/artworks';
 import { formatZAR } from '@/lib/money';
+import { artworkThumbPath } from '@/lib/image-paths';
 
 export const metadata = { title: 'Admin — Artworks' };
 
@@ -43,7 +44,14 @@ export default async function AdminArtworksPage(props: PageProps<'/admin/artwork
                 <td className="px-4 py-3">
                   {artwork.primaryImagePath && (
                     <div className="relative h-12 w-12 overflow-hidden bg-parchment">
-                      <Image src={artwork.primaryImagePath} alt="" fill className="object-cover" />
+                      <Image
+                        src={artworkThumbPath(artwork.primaryImagePath)}
+                        alt=""
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                        unoptimized
+                      />
                     </div>
                   )}
                 </td>

@@ -7,6 +7,7 @@ import type { ArtworkFormState } from '@/lib/actions/admin-artworks';
 import { FormField, TextInput, TextArea, Select } from '@/components/ui/form-field';
 import { Button } from '@/components/ui/button';
 import { centsToRandString } from '@/lib/money';
+import { artworkThumbPath } from '@/lib/image-paths';
 
 const initialState: ArtworkFormState = { status: 'idle' };
 
@@ -146,7 +147,14 @@ export function ArtworkForm({
       >
         {artwork?.primaryImagePath && (
           <div className="relative mb-3 h-32 w-32 overflow-hidden bg-parchment">
-            <Image src={artwork.primaryImagePath} alt="" fill className="object-cover" />
+            <Image
+              src={artworkThumbPath(artwork.primaryImagePath)}
+              alt=""
+              fill
+              sizes="128px"
+              className="object-cover"
+              unoptimized
+            />
           </div>
         )}
         <input
