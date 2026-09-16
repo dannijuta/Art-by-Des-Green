@@ -9,6 +9,7 @@ import { formatZAR } from '@/lib/money';
 import { CheckoutForm } from '@/components/forms/checkout-form';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { isPayfastLive } from '@/lib/payfast-live';
+import { TrackInitiateCheckout } from '@/components/analytics/track-initiate-checkout';
 
 export const metadata: Metadata = { title: 'Checkout', robots: { index: false } };
 
@@ -38,6 +39,8 @@ export default async function CheckoutStartPage(props: PageProps<'/checkout/[slu
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8">
+      <TrackInitiateCheckout artworkId={artwork.id} title={artwork.publicTitle} priceCents={artwork.priceCents} />
+
       <SectionHeading
         as="h1"
         eyebrow={payfastLive ? 'Secure Checkout' : 'Purchase Request'}

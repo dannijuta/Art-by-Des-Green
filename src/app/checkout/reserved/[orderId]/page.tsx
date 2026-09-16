@@ -4,6 +4,7 @@ import { getOrderById } from '@/lib/data/orders';
 import { getContactSettings } from '@/lib/data/settings';
 import { formatZAR } from '@/lib/money';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { TrackLead } from '@/components/analytics/track-lead';
 
 export const metadata = { title: 'Purchase Request Received', robots: { index: false } };
 
@@ -15,6 +16,8 @@ export default async function CheckoutReservedPage(props: PageProps<'/checkout/r
 
   return (
     <div className="mx-auto max-w-xl px-5 py-24 text-center sm:px-8">
+      <TrackLead orderId={order.id} orderNumber={order.orderNumber} totalCents={order.totalCents} />
+
       <SectionHeading as="h1" title="Purchase Request Received" />
       <p className="mt-4 text-charcoal-soft">
         Thank you — this artwork has been reserved for you. Payment will be arranged securely once your shipping or

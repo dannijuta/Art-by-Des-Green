@@ -7,6 +7,7 @@ import { ArtworkCard } from '@/components/artwork/artwork-card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { resolveShippingMethod, shippingMethodLabel } from '@/lib/shipping';
 import { isPayfastLive } from '@/lib/payfast-live';
+import { TrackViewContent } from '@/components/analytics/track-view-content';
 
 export async function generateMetadata(props: PageProps<'/artwork/[slug]'>): Promise<Metadata> {
   const { slug } = await props.params;
@@ -92,6 +93,13 @@ export default async function ArtworkPage(props: PageProps<'/artwork/[slug]'>) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <TrackViewContent
+        artworkId={artwork.id}
+        title={artwork.publicTitle}
+        categoryName={artwork.category?.name}
+        priceCents={artwork.priceCents}
       />
 
       <ArtworkDetail artwork={artwork} />
