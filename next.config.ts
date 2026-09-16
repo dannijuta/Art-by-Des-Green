@@ -16,6 +16,15 @@ const nextConfig: NextConfig = {
     // no visible benefit, and started returning 402s once the monthly quota
     // was used up.
     qualities: [75],
+    // Same reasoning as qualities above: fewer distinct widths means fewer
+    // distinct (url, width, quality) transformations Vercel has to generate
+    // and count against the free quota. Next.js's default deviceSizes goes
+    // up to 3840px (4K) — nothing on this site is ever displayed wider than
+    // ~55vw of a real viewport (see every `sizes` prop in src/), so even at
+    // 2x pixel density that tops out well under 2000px. Trimmed to five
+    // sensible breakpoints instead of the default eight.
+    deviceSizes: [640, 828, 1080, 1200, 1920],
+    imageSizes: [64, 96, 128, 256],
     formats: ['image/avif', 'image/webp'],
     remotePatterns: supabaseHostname
       ? [{ protocol: 'https', hostname: supabaseHostname, pathname: '/storage/v1/object/public/**' }]
