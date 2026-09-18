@@ -23,6 +23,7 @@ interface ArtworkRow {
   publishing_status: Artwork['publishingStatus'];
   is_featured: boolean;
   is_hero: boolean;
+  is_new: boolean;
   display_order: number | null;
   primary_image_path: string | null;
   primary_image_width: number | null;
@@ -51,7 +52,7 @@ const BASE_SELECT = `
     a.id, a.rank, a.slug, a.public_title, a.working_description, a.public_description,
     a.category_id, c.name as category_name, c.slug as category_slug, c.sort_order as category_sort_order,
     a.width_cm, a.height_cm, a.medium, a.surface, a.framed, a.price_cents,
-    a.availability_status, a.publishing_status, a.is_featured, a.is_hero, a.display_order,
+    a.availability_status, a.publishing_status, a.is_featured, a.is_hero, a.is_new, a.display_order,
     a.primary_image_path, a.primary_image_width, a.primary_image_height, a.alt_text, a.shipping_method_override, a.admin_edited,
     a.internal_launch_priority, a.internal_sellability_tier, a.internal_selling_note, a.internal_notes, a.internal_category_tag,
     a.short_card_copy, a.seo_title, a.signed, a.varnished, a.certificate_of_authenticity,
@@ -89,6 +90,7 @@ function mapRow(row: ArtworkRow, images: ArtworkImage[] = []): ArtworkAdmin {
     publishingStatus: row.publishing_status,
     isFeatured: row.is_featured,
     isHero: row.is_hero,
+    isNew: row.is_new,
     displayOrder: row.display_order,
     primaryImagePath: row.primary_image_path,
     primaryImageWidth: row.primary_image_width,

@@ -65,6 +65,7 @@ export const artworkAdminSchema = z.object({
   publishingStatus: z.enum(artworkPublishingStatuses),
   isFeatured: z.union([z.literal('on'), z.boolean()]).optional(),
   isHero: z.union([z.literal('on'), z.boolean()]).optional(),
+  isNew: z.union([z.literal('on'), z.boolean()]).optional(),
   shippingMethodOverride: z.enum(shippingMethods).optional().or(z.literal('')),
   altText: z.string().trim().max(300).optional().or(z.literal('')),
 });

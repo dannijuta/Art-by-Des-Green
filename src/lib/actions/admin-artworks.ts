@@ -53,6 +53,7 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
   const categoryId = d.categoryId ? Number(d.categoryId) : null;
   const isFeatured = d.isFeatured === 'on' || d.isFeatured === true;
   const isHero = d.isHero === 'on' || d.isHero === true;
+  const isNew = d.isNew === 'on' || d.isNew === true;
   const shippingOverride = d.shippingMethodOverride || null;
 
   let imagePath: string | null = null;
@@ -93,12 +94,12 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
       `update artworks set
         public_title = $1, working_description = $2, public_description = $3, category_id = $4,
         width_cm = $5, height_cm = $6, medium = $7, surface = $8, framed = $9, price_cents = $10,
-        availability_status = $11, publishing_status = $12, is_featured = $13, is_hero = $14,
-        shipping_method_override = $15, alt_text = $16, slug = $17, admin_edited = true,
-        primary_image_path = coalesce($18, primary_image_path),
-        primary_image_width = coalesce($19, primary_image_width),
-        primary_image_height = coalesce($20, primary_image_height)
-      where id = $21`,
+        availability_status = $11, publishing_status = $12, is_featured = $13, is_hero = $14, is_new = $15,
+        shipping_method_override = $16, alt_text = $17, slug = $18, admin_edited = true,
+        primary_image_path = coalesce($19, primary_image_path),
+        primary_image_width = coalesce($20, primary_image_width),
+        primary_image_height = coalesce($21, primary_image_height)
+      where id = $22`,
       [
         d.publicTitle,
         d.workingDescription || null,
@@ -114,6 +115,7 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
         d.publishingStatus,
         isFeatured,
         isHero,
+        isNew,
         shippingOverride,
         d.altText || null,
         slug,
@@ -163,9 +165,9 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
     `insert into artworks (
       rank, slug, public_title, working_description, public_description, category_id,
       width_cm, height_cm, medium, surface, framed, price_cents,
-      availability_status, publishing_status, is_featured, is_hero, shipping_method_override, alt_text,
+      availability_status, publishing_status, is_featured, is_hero, is_new, shipping_method_override, alt_text,
       primary_image_path, primary_image_width, primary_image_height, admin_edited
-    ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,true)
+    ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,true)
     returning id`,
     [
       rank,
@@ -184,6 +186,7 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
       d.publishingStatus,
       isFeatured,
       isHero,
+      isNew,
       shippingOverride,
       d.altText || null,
       imagePath,

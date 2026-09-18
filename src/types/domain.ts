@@ -44,6 +44,7 @@ export interface Artwork {
   publishingStatus: PublishingStatus;
   isFeatured: boolean;
   isHero: boolean;
+  isNew: boolean;
   displayOrder: number | null;
   primaryImagePath: string | null;
   primaryImageWidth: number | null;

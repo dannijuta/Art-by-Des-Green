@@ -133,6 +133,10 @@ export function ArtworkForm({
           <input type="checkbox" name="isHero" defaultChecked={artwork?.isHero} className="h-4 w-4 accent-clay" />
           Use as homepage hero
         </label>
+        <label className="flex items-center gap-2 text-sm text-charcoal">
+          <input type="checkbox" name="isNew" defaultChecked={artwork?.isNew} className="h-4 w-4 accent-clay" />
+          Show &ldquo;New&rdquo; badge
+        </label>
       </div>
 
       <FormField label="Alt text" htmlFor="altText" optional>

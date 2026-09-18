@@ -1,5 +1,4 @@
 import type { AvailabilityStatus } from '@/types/domain';
-import { isRecentlyAdded } from '@/lib/artwork-new';
 
 const LABELS: Partial<Record<AvailabilityStatus, string>> = {
   sold: 'Sold',
@@ -7,7 +6,7 @@ const LABELS: Partial<Record<AvailabilityStatus, string>> = {
   private_collection: 'Private Collection',
 };
 
-export function AvailabilityBadge({ status, createdAt }: { status: AvailabilityStatus; createdAt?: string }) {
+export function AvailabilityBadge({ status, isNew }: { status: AvailabilityStatus; isNew?: boolean }) {
   const label = LABELS[status];
   if (label) {
     return (
@@ -17,7 +16,7 @@ export function AvailabilityBadge({ status, createdAt }: { status: AvailabilityS
     );
   }
 
-  if (status === 'available' && createdAt && isRecentlyAdded(createdAt)) {
+  if (status === 'available' && isNew) {
     return (
       <span className="inline-flex items-center bg-clay px-3 py-1 text-[0.7rem] tracking-[0.15em] text-cream">
         NEW
