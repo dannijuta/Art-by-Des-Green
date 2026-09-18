@@ -35,11 +35,9 @@ export function ArtworkCard({
             unoptimized
           />
         )}
-        {artwork.availabilityStatus !== 'available' && (
-          <div className="absolute left-3 top-3">
-            <AvailabilityBadge status={artwork.availabilityStatus} />
-          </div>
-        )}
+        <div className="absolute left-3 top-3">
+          <AvailabilityBadge status={artwork.availabilityStatus} createdAt={artwork.createdAt} />
+        </div>
         <div className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-charcoal/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
           <div className="p-4 text-cream">
             <p className="font-serif text-lg italic">{artwork.publicTitle}</p>

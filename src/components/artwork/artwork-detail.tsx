@@ -44,11 +44,9 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
             />
           )}
         </div>
-        {artwork.availabilityStatus !== 'available' && (
-          <div className="absolute left-4 top-4">
-            <AvailabilityBadge status={artwork.availabilityStatus} />
-          </div>
-        )}
+        <div className="absolute left-4 top-4">
+          <AvailabilityBadge status={artwork.availabilityStatus} createdAt={artwork.createdAt} />
+        </div>
       </div>
 
       <div>

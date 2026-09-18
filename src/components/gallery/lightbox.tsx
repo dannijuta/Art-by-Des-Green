@@ -125,7 +125,7 @@ export function Lightbox({
         <div>
           <div className="flex items-center gap-3">
             <p className="font-serif text-lg italic">{artwork.publicTitle}</p>
-            {artwork.availabilityStatus !== 'available' && <AvailabilityBadge status={artwork.availabilityStatus} />}
+            <AvailabilityBadge status={artwork.availabilityStatus} createdAt={artwork.createdAt} />
           </div>
           <p className="mt-1 text-sm text-cream/70">
             {artwork.widthCm && artwork.heightCm ? `${artwork.widthCm} × ${artwork.heightCm} cm` : null}
