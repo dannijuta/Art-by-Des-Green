@@ -1,8 +1,11 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Artwork } from '@/types/domain';
 import { formatZAR } from '@/lib/money';
 import { artworkThumbPath } from '@/lib/image-paths';
+import { trackMetaEvent } from '@/lib/meta-pixel';
 import { AvailabilityBadge } from './availability-badge';
 
 export function ArtworkCard({
@@ -17,10 +20,26 @@ export function ArtworkCard({
   const width = artwork.primaryImageWidth ?? 1000;
   const height = artwork.primaryImageHeight ?? 1200;
 
+  // Every click on an artwork thumbnail — whether it opens the lightbox
+  // (gallery/available-works) or navigates straight to the artwork page
+  // (home page, related works) — is a genuine "clicked on this painting"
+  // signal. TrackViewContent (on the artwork detail page itself) only fires
+  // for the subset of clicks that result in a real page load, so without
+  // this a thumbnail opened in the lightbox is invisible to Meta entirely.
+  function handleClick(e: React.MouseEvent) {
+    trackMetaEvent('ArtworkClick', {
+      content_ids: [artwork.id],
+      content_type: 'product',
+      content_name: artwork.publicTitle,
+      content_category: artwork.category?.name ?? undefined,
+    });
+    onOpen?.(e);
+  }
+
   return (
     <Link
       href={`/artwork/${artwork.slug}`}
-      onClick={onOpen}
+      onClick={handleClick}
       className="group mb-6 block break-inside-avoid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
     >
       <div className="relative overflow-hidden bg-parchment">
