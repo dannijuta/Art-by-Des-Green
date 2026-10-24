@@ -11,6 +11,38 @@ export interface ContactFormState {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Record<string, string>;
+  /** Changes after each error so the form can remount with the typed values. */
+  restoreKey?: string;
+  values?: {
+    name: string;
+    email: string;
+    phone: string;
+    reason: string;
+    message: string;
+    consent: boolean;
+  };
+}
+
+function errorState(
+  formData: FormData,
+  message: string,
+  fieldErrors?: Record<string, string>
+): ContactFormState {
+  const consent = formData.get('consent');
+  return {
+    status: 'error',
+    message,
+    fieldErrors,
+    restoreKey: crypto.randomUUID(),
+    values: {
+      name: String(formData.get('name') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      phone: String(formData.get('phone') ?? ''),
+      reason: String(formData.get('reason') ?? ''),
+      message: String(formData.get('message') ?? ''),
+      consent: consent === 'on' || consent === 'true' || consent === '1',
+    },
+  };
 }
 
 const SUCCESS_MESSAGE = 'Thank you — your message has been sent. Des will be in touch soon.';
@@ -35,28 +67,22 @@ export async function submitContactForm(
       const key = String(issue.path[0]);
       if (!fieldErrors[key]) fieldErrors[key] = issue.message;
     }
-    return { status: 'error', message: 'Please check the highlighted fields.', fieldErrors };
+    return errorState(formData, 'Please check the highlighted fields.', fieldErrors);
   }
 
   const timing = assessSubmitTiming(formData.get('formRenderedAt'));
   if (timing === 'too_fast') {
-    return {
-      status: 'error',
-      message: 'Please take a moment to review your message, then send it again.',
-    };
+    return errorState(formData, 'Please take a moment to review your message, then send it again.');
   }
   if (timing === 'invalid') {
-    return {
-      status: 'error',
-      message: 'Please refresh the page and try sending your message again.',
-    };
+    return errorState(formData, 'Please refresh the page and try sending your message again.');
   }
 
   const headerList = await headers();
   const ip = getClientIp(headerList);
   const allowed = await checkRateLimit('contact', ip, { maxAttempts: 5, windowMinutes: 15 });
   if (!allowed) {
-    return { status: 'error', message: 'Too many submissions. Please try again in a little while.' };
+    return errorState(formData, 'Too many submissions. Please try again in a little while.');
   }
 
   const { name, email, phone, reason, artworkId, message, consent } = parsed.data;

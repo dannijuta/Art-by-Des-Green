@@ -38,8 +38,10 @@ export function ContactForm({
     );
   }
 
+  const values = state.values;
+
   return (
-    <form action={formAction} noValidate className="space-y-5">
+    <form key={state.restoreKey ?? 'new'} action={formAction} noValidate className="space-y-5">
       {artworkTitle && (
         <p className="border border-border-soft bg-parchment px-4 py-3 text-sm text-charcoal-soft">
           Regarding: <span className="text-charcoal">{artworkTitle}</span>
@@ -56,19 +58,39 @@ export function ContactForm({
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField label="Name" htmlFor="name" error={state.fieldErrors?.name}>
-          <TextInput id="name" name="name" type="text" required autoComplete="name" />
+          <TextInput
+            id="name"
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            defaultValue={values?.name ?? ''}
+          />
         </FormField>
         <FormField label="Email" htmlFor="email" error={state.fieldErrors?.email}>
-          <TextInput id="email" name="email" type="email" required autoComplete="email" />
+          <TextInput
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            defaultValue={values?.email ?? ''}
+          />
         </FormField>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField label="Telephone" htmlFor="phone" optional error={state.fieldErrors?.phone}>
-          <TextInput id="phone" name="phone" type="tel" autoComplete="tel" />
+          <TextInput
+            id="phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            defaultValue={values?.phone ?? ''}
+          />
         </FormField>
         <FormField label="Reason for enquiry" htmlFor="reason" error={state.fieldErrors?.reason}>
-          <Select id="reason" name="reason" required defaultValue={defaultReason}>
+          <Select id="reason" name="reason" required defaultValue={values?.reason || defaultReason}>
             {REASONS.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
@@ -79,11 +101,18 @@ export function ContactForm({
       </div>
 
       <FormField label="Message" htmlFor="message" error={state.fieldErrors?.message}>
-        <TextArea id="message" name="message" rows={5} required />
+        <TextArea id="message" name="message" rows={5} required defaultValue={values?.message ?? ''} />
       </FormField>
 
       <div className="flex items-start gap-3">
-        <input id="consent" name="consent" type="checkbox" required className="mt-1 h-4 w-4 accent-clay" />
+        <input
+          id="consent"
+          name="consent"
+          type="checkbox"
+          required
+          defaultChecked={Boolean(values?.consent)}
+          className="mt-1 h-4 w-4 accent-clay"
+        />
         <label htmlFor="consent" className="text-sm text-charcoal-soft">
           I agree that Art by Des Green may use these details to respond to my enquiry.
         </label>
