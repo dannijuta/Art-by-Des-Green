@@ -3,10 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getArtistProfile, getContactSettings } from '@/lib/data/settings';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { PUBLIC_LOCATION } from '@/lib/local-business';
 
 export const metadata: Metadata = {
   title: 'Meet the Artist',
-  description: 'Meet Des Green, a South African oil painter based in East London.',
+  description: 'Meet Des Green, a South African oil painter based in East London (Gonubie), Eastern Cape.',
   alternates: { canonical: '/meet-the-artist' },
   openGraph: { url: '/meet-the-artist' },
 };
@@ -38,7 +39,7 @@ export default async function MeetTheArtistPage() {
             <p className="text-xs tracking-[0.25em] text-clay-dark">ABOUT THE ARTIST</p>
             <h1 className="mt-3 font-serif text-4xl text-charcoal sm:text-5xl">Meet {artist.name}</h1>
             <p className="mt-2 text-sm text-charcoal-soft">
-              {artist.professionalDescription} · {artist.basedIn}
+              {artist.professionalDescription}, based in {PUBLIC_LOCATION}.
             </p>
             {artist.introLine && (
               <p className="mt-6 max-w-md font-serif text-xl italic leading-relaxed text-charcoal-soft">

@@ -20,7 +20,9 @@ export const contactFormSchema = z.object({
     .refine((v) => v === 'on' || v === 'true' || v === true, {
       message: 'Please confirm you are happy for us to contact you about this enquiry.',
     }),
-  honeypot: z.string().max(0, 'Spam detected.').optional().or(z.literal('')),
+  // Any value is accepted here. A filled honeypot is discarded in the action
+  // with a fake success, instead of a validation error that tells a bot why.
+  honeypot: z.string().optional().or(z.literal('')),
 });
 
 export const commissionFormSchema = z.object({

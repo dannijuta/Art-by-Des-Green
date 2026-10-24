@@ -8,6 +8,7 @@ import type {
   PoliciesSettings,
   SeoSettings,
 } from '@/types/domain';
+import { formatPhoneDisplay, HOMEPAGE_DESCRIPTION, HOMEPAGE_TITLE, PUBLIC_LOCATION } from '@/lib/local-business';
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {
   try {
@@ -29,7 +30,7 @@ export async function setSetting(key: string, value: unknown): Promise<void> {
 const FALLBACK_ARTIST: ArtistProfileSettings = {
   name: 'Des Green',
   professionalDescription: 'South African oil painter',
-  basedIn: 'East London, South Africa',
+  basedIn: PUBLIC_LOCATION,
   commissionsOpen: true,
   introLine: '',
   bioParagraphs: [],
@@ -39,7 +40,7 @@ const FALLBACK_ARTIST: ArtistProfileSettings = {
 };
 
 const FALLBACK_CONTACT: ContactSettings = {
-  phoneDisplay: '083 524 4713',
+  phoneDisplay: '+27 83 524 4713',
   phoneLink: 'tel:+27835244713',
   email: 'djuta68@gmail.com',
   emailLink: 'mailto:djuta68@gmail.com',
@@ -48,7 +49,7 @@ const FALLBACK_CONTACT: ContactSettings = {
   instagramUrl: 'https://www.instagram.com/artbydesj/',
   instagramHandle: '@artbydesj',
   instagramLabel: 'Art by Des Green on Instagram',
-  location: 'East London, South Africa',
+  location: PUBLIC_LOCATION,
 };
 
 const FALLBACK_HOMEPAGE: HomepageCopySettings = {
@@ -84,12 +85,20 @@ const FALLBACK_POLICIES: PoliciesSettings = {
 
 const FALLBACK_SEO: SeoSettings = {
   siteName: 'Art by Des Green',
-  defaultTitle: 'Art by Des Green | Original South African Oil Paintings',
-  defaultDescription: 'Original oil paintings by South African artist Des Green.',
+  defaultTitle: HOMEPAGE_TITLE,
+  defaultDescription: HOMEPAGE_DESCRIPTION,
 };
 
 export const getArtistProfile = () => getSetting('public.artist_profile', FALLBACK_ARTIST);
-export const getContactSettings = () => getSetting('public.contact', FALLBACK_CONTACT);
+
+export async function getContactSettings(): Promise<ContactSettings> {
+  const contact = await getSetting('public.contact', FALLBACK_CONTACT);
+  return {
+    ...contact,
+    phoneDisplay: formatPhoneDisplay(contact.phoneDisplay || contact.phoneLink),
+  };
+}
+
 export const getHomepageCopy = () => getSetting('public.homepage_copy', FALLBACK_HOMEPAGE);
 export const getShippingSettings = () => getSetting('public.shipping_settings', FALLBACK_SHIPPING);
 export const getPolicies = () => getSetting('public.policies', FALLBACK_POLICIES);

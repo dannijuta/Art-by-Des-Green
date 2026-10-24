@@ -5,17 +5,59 @@ import { query } from '@/lib/db';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { sendEmail, escapeHtml } from '@/lib/email';
 import { contactFormSchema } from '@/lib/validation';
+import { assessSubmitTiming } from '@/lib/form-spam';
 
 export interface ContactFormState {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Record<string, string>;
+  /** Changes after each error so the form can remount with the typed values. */
+  restoreKey?: string;
+  values?: {
+    name: string;
+    email: string;
+    phone: string;
+    reason: string;
+    message: string;
+    consent: boolean;
+  };
 }
+
+function errorState(
+  formData: FormData,
+  message: string,
+  fieldErrors?: Record<string, string>
+): ContactFormState {
+  const consent = formData.get('consent');
+  return {
+    status: 'error',
+    message,
+    fieldErrors,
+    restoreKey: crypto.randomUUID(),
+    values: {
+      name: String(formData.get('name') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      phone: String(formData.get('phone') ?? ''),
+      reason: String(formData.get('reason') ?? ''),
+      message: String(formData.get('message') ?? ''),
+      consent: consent === 'on' || consent === 'true' || consent === '1',
+    },
+  };
+}
+
+const SUCCESS_MESSAGE = 'Thank you — your message has been sent. Des will be in touch soon.';
 
 export async function submitContactForm(
   _prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
+  // Checked before validation so a bot that also fails other fields still
+  // gets the same success response and does not learn which control tripped.
+  const honeypot = String(formData.get('honeypot') ?? '').trim();
+  if (honeypot) {
+    return { status: 'success', message: SUCCESS_MESSAGE };
+  }
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = contactFormSchema.safeParse(raw);
 
@@ -25,19 +67,22 @@ export async function submitContactForm(
       const key = String(issue.path[0]);
       if (!fieldErrors[key]) fieldErrors[key] = issue.message;
     }
-    return { status: 'error', message: 'Please check the highlighted fields.', fieldErrors };
+    return errorState(formData, 'Please check the highlighted fields.', fieldErrors);
   }
 
-  if (parsed.data.honeypot) {
-    // Silently "succeed" for bots so they don't learn the honeypot was tripped.
-    return { status: 'success' };
+  const timing = assessSubmitTiming(formData.get('formRenderedAt'));
+  if (timing === 'too_fast') {
+    return errorState(formData, 'Please take a moment to review your message, then send it again.');
+  }
+  if (timing === 'invalid') {
+    return errorState(formData, 'Please refresh the page and try sending your message again.');
   }
 
   const headerList = await headers();
   const ip = getClientIp(headerList);
   const allowed = await checkRateLimit('contact', ip, { maxAttempts: 5, windowMinutes: 15 });
   if (!allowed) {
-    return { status: 'error', message: 'Too many submissions. Please try again in a little while.' };
+    return errorState(formData, 'Too many submissions. Please try again in a little while.');
   }
 
   const { name, email, phone, reason, artworkId, message, consent } = parsed.data;
@@ -80,5 +125,5 @@ export async function submitContactForm(
     });
   }
 
-  return { status: 'success', message: 'Thank you — your message has been sent. Des will be in touch soon.' };
+  return { status: 'success', message: SUCCESS_MESSAGE };
 }

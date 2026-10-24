@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ArtistProfileSettings, ContactSettings } from '@/types/domain';
 import { FacebookIcon, InstagramIcon, MailIcon } from '@/components/icons/social';
+import { GOOGLE_REVIEW_URL, PUBLIC_LOCATION } from '@/lib/local-business';
 
 export function SiteFooter({
   artist,
@@ -19,7 +20,9 @@ export function SiteFooter({
         <div>
           <span className="font-serif text-2xl italic text-clay-dark">Art by Des</span>
           <p className="mt-1 text-[0.65rem] tracking-[0.3em] text-charcoal-soft">{artist.name.toUpperCase()}</p>
-          <p className="mt-4 max-w-xs text-sm text-charcoal-soft">{contact.location}</p>
+          <p className="mt-4 max-w-xs text-sm text-charcoal-soft">
+            Original oil paintings in {PUBLIC_LOCATION}.
+          </p>
         </div>
 
         <nav aria-label="Footer navigation">
@@ -75,6 +78,16 @@ export function SiteFooter({
               >
                 <InstagramIcon className="h-4 w-4 shrink-0" />
                 {contact.instagramHandle}
+              </a>
+            </li>
+            <li>
+              <a
+                href={GOOGLE_REVIEW_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-clay-dark"
+              >
+                Leave a Google review
               </a>
             </li>
           </ul>
