@@ -4,10 +4,13 @@ import { getContactSettings, getArtistProfile } from '@/lib/data/settings';
 import { ContactForm } from '@/components/forms/contact-form';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { FacebookIcon, InstagramIcon, MailIcon, PhoneIcon } from '@/components/icons/social';
+import { GOOGLE_REVIEW_URL, PUBLIC_LOCATION } from '@/lib/local-business';
+import { captureFormRenderedAt } from '@/lib/form-spam';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with South African artist Des Green for artwork enquiries, availability, or commissions.',
+  description:
+    'Get in touch with South African artist Des Green in East London (Gonubie), Eastern Cape for artwork enquiries, availability, or commissions.',
   alternates: { canonical: '/contact' },
   openGraph: { url: '/contact' },
 };
@@ -24,7 +27,7 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
       <SectionHeading as="h1" eyebrow="Get in Touch" title="Get in Touch" />
       <p className="mt-4 max-w-2xl text-base text-charcoal-soft">
         For artwork enquiries, commissions, availability or collection questions, you are welcome to contact Des
-        directly.
+        directly. The studio is in {PUBLIC_LOCATION}.
       </p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_1.4fr]">
@@ -34,7 +37,7 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
             <dl className="mt-4 space-y-3 text-sm">
               <div>
                 <dt className="text-charcoal-soft">Based in</dt>
-                <dd className="text-charcoal">{contact.location}</dd>
+                <dd className="text-charcoal">{PUBLIC_LOCATION}</dd>
               </div>
               <div>
                 <dt className="text-charcoal-soft">Telephone</dt>
@@ -80,6 +83,19 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
                   </a>
                 </dd>
               </div>
+              <div>
+                <dt className="text-charcoal-soft">Google</dt>
+                <dd>
+                  <a
+                    href={GOOGLE_REVIEW_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-charcoal hover:text-clay-dark"
+                  >
+                    Leave a Google review
+                  </a>
+                </dd>
+              </div>
               {artist.commissionsOpen && (
                 <div>
                   <dt className="text-charcoal-soft">Commission status</dt>
@@ -106,7 +122,12 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
         <div>
           <h2 className="font-serif text-xl text-charcoal">Enquire About an Artwork</h2>
           <div className="mt-4">
-            <ContactForm artworkId={artworkId} artworkTitle={artworkTitle} defaultReason={artworkId ? 'purchase' : 'general'} />
+            <ContactForm
+              artworkId={artworkId}
+              artworkTitle={artworkTitle}
+              defaultReason={artworkId ? 'purchase' : 'general'}
+              formRenderedAt={captureFormRenderedAt()}
+            />
           </div>
         </div>
       </div>

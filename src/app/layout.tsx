@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { getSeoSettings, getArtistProfile, getContactSettings } from '@/lib/data/settings';
 import { hasSoldWorks } from '@/lib/data/artworks';
 import { MetaPixelBase } from '@/components/analytics/meta-pixel-base';
+import { buildLocalBusinessJsonLd, HOMEPAGE_DESCRIPTION, serializeJsonLd } from '@/lib/local-business';
 
 const playfair = Playfair_Display({
   variable: '--font-playfair',
@@ -57,23 +58,13 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
     getContactSettings(),
     hasSoldWorks(),
   ]);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-  const personJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: artist.name,
-    jobTitle: 'Artist / Oil Painter',
-    description: artist.professionalDescription,
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: artist.basedIn,
-    },
+  const localBusinessJsonLd = buildLocalBusinessJsonLd({
+    founderName: artist.name,
+    founderDescription: artist.professionalDescription,
     email: contact.email,
     telephone: contact.phoneDisplay,
-    url: siteUrl,
-    sameAs: [contact.facebookUrl, contact.instagramUrl],
-  };
+    description: HOMEPAGE_DESCRIPTION,
+  });
 
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
@@ -84,7 +75,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         </a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(localBusinessJsonLd) }}
         />
         <SiteHeader artist={artist} showSoldWork={showSoldWork} />
         <main id="main-content" className="flex-1">

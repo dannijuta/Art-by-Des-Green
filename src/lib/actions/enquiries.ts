@@ -5,6 +5,7 @@ import { query } from '@/lib/db';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { sendEmail, escapeHtml } from '@/lib/email';
 import { contactFormSchema } from '@/lib/validation';
+import { assessSubmitTiming } from '@/lib/form-spam';
 
 export interface ContactFormState {
   status: 'idle' | 'success' | 'error';
@@ -12,10 +13,19 @@ export interface ContactFormState {
   fieldErrors?: Record<string, string>;
 }
 
+const SUCCESS_MESSAGE = 'Thank you — your message has been sent. Des will be in touch soon.';
+
 export async function submitContactForm(
   _prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
+  // Checked before validation so a bot that also fails other fields still
+  // gets the same success response and does not learn which control tripped.
+  const honeypot = String(formData.get('honeypot') ?? '').trim();
+  if (honeypot) {
+    return { status: 'success', message: SUCCESS_MESSAGE };
+  }
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = contactFormSchema.safeParse(raw);
 
@@ -28,9 +38,18 @@ export async function submitContactForm(
     return { status: 'error', message: 'Please check the highlighted fields.', fieldErrors };
   }
 
-  if (parsed.data.honeypot) {
-    // Silently "succeed" for bots so they don't learn the honeypot was tripped.
-    return { status: 'success' };
+  const timing = assessSubmitTiming(formData.get('formRenderedAt'));
+  if (timing === 'too_fast') {
+    return {
+      status: 'error',
+      message: 'Please take a moment to review your message, then send it again.',
+    };
+  }
+  if (timing === 'invalid') {
+    return {
+      status: 'error',
+      message: 'Please refresh the page and try sending your message again.',
+    };
   }
 
   const headerList = await headers();
@@ -80,5 +99,5 @@ export async function submitContactForm(
     });
   }
 
-  return { status: 'success', message: 'Thank you — your message has been sent. Des will be in touch soon.' };
+  return { status: 'success', message: SUCCESS_MESSAGE };
 }

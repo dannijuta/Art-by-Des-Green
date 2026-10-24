@@ -6,10 +6,21 @@ import { ArtworkCard } from '@/components/artwork/artwork-card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { getHeroArtwork, listFeaturedArtworks, listCategories } from '@/lib/data/artworks';
 import { getHomepageCopy, getArtistProfile } from '@/lib/data/settings';
+import { HOMEPAGE_DESCRIPTION, HOMEPAGE_TITLE, PUBLIC_LOCATION } from '@/lib/local-business';
 
 export const metadata: Metadata = {
+  title: { absolute: HOMEPAGE_TITLE },
+  description: HOMEPAGE_DESCRIPTION,
   alternates: { canonical: '/' },
-  openGraph: { url: '/' },
+  openGraph: {
+    title: HOMEPAGE_TITLE,
+    description: HOMEPAGE_DESCRIPTION,
+    url: '/',
+  },
+  twitter: {
+    title: HOMEPAGE_TITLE,
+    description: HOMEPAGE_DESCRIPTION,
+  },
 };
 
 export default async function HomePage() {
@@ -84,7 +95,7 @@ export default async function HomePage() {
             <p className="text-xs tracking-[0.25em] text-clay-dark">ABOUT THE ARTIST</p>
             <h2 className="mt-2 font-serif text-3xl text-charcoal sm:text-4xl">{artist.name}</h2>
             <p className="mt-2 text-sm text-charcoal-soft">
-              {artist.professionalDescription} · {artist.basedIn}
+              {artist.professionalDescription}, based in {PUBLIC_LOCATION}.
             </p>
             {artist.introLine && (
               <p className="mt-6 max-w-md text-base leading-relaxed text-charcoal-soft">{artist.introLine}</p>

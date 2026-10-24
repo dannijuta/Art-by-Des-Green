@@ -19,10 +19,13 @@ export function ContactForm({
   artworkId,
   artworkTitle,
   defaultReason = 'general',
+  formRenderedAt,
 }: {
   artworkId?: string;
   artworkTitle?: string;
   defaultReason?: string;
+  /** Server time when this form was rendered. The action rejects faster submits. */
+  formRenderedAt: number;
 }) {
   const [state, formAction, pending] = useActionState(submitContactForm, initialState);
 
@@ -43,6 +46,7 @@ export function ContactForm({
         </p>
       )}
       {artworkId && <input type="hidden" name="artworkId" value={artworkId} />}
+      <input type="hidden" name="formRenderedAt" value={formRenderedAt} />
 
       {/* Honeypot: hidden from real visitors, invisible to screen readers, but bots that fill every field will trip it. */}
       <div className="hidden" aria-hidden="true">
