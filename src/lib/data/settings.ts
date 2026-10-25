@@ -8,7 +8,16 @@ import type {
   PoliciesSettings,
   SeoSettings,
 } from '@/types/domain';
-import { formatPhoneDisplay, HOMEPAGE_DESCRIPTION, HOMEPAGE_TITLE, PUBLIC_LOCATION } from '@/lib/local-business';
+import {
+  formatPhoneDisplay,
+  HOMEPAGE_DESCRIPTION,
+  HOMEPAGE_TITLE,
+  INSTAGRAM_HANDLE,
+  INSTAGRAM_URL,
+  PUBLIC_LOCATION,
+  publicInstagramHandle,
+  publicInstagramUrl,
+} from '@/lib/local-business';
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {
   try {
@@ -46,8 +55,8 @@ const FALLBACK_CONTACT: ContactSettings = {
   emailLink: 'mailto:djuta68@gmail.com',
   facebookUrl: 'https://www.facebook.com/artbydesj',
   facebookLabel: 'Art by Des Green on Facebook',
-  instagramUrl: 'https://www.instagram.com/artbydesj/',
-  instagramHandle: '@artbydesj',
+  instagramUrl: INSTAGRAM_URL,
+  instagramHandle: INSTAGRAM_HANDLE,
   instagramLabel: 'Art by Des Green on Instagram',
   location: PUBLIC_LOCATION,
 };
@@ -96,6 +105,8 @@ export async function getContactSettings(): Promise<ContactSettings> {
   return {
     ...contact,
     phoneDisplay: formatPhoneDisplay(contact.phoneDisplay || contact.phoneLink),
+    instagramUrl: publicInstagramUrl(contact.instagramUrl),
+    instagramHandle: publicInstagramHandle(contact.instagramHandle),
   };
 }
 

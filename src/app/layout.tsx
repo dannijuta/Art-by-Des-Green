@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { getSeoSettings, getArtistProfile, getContactSettings } from '@/lib/data/settings';
 import { hasSoldWorks } from '@/lib/data/artworks';
 import { MetaPixelBase } from '@/components/analytics/meta-pixel-base';
+import { GoogleAnalyticsTag } from '@/components/analytics/google-analytics';
 import { buildLocalBusinessJsonLd, HOMEPAGE_DESCRIPTION, serializeJsonLd } from '@/lib/local-business';
 
 const playfair = Playfair_Display({
@@ -70,6 +71,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-ivory text-charcoal antialiased">
         <MetaPixelBase />
+        <GoogleAnalyticsTag />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>

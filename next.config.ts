@@ -56,13 +56,13 @@ const nextConfig: NextConfig = {
               // React dev mode needs eval() for its debugging tools; production
               // builds never call eval(), so this only loosens local `next dev`.
               // connect.facebook.net serves the Meta Pixel base script.
-              `script-src 'self' 'unsafe-inline' https://connect.facebook.net${isDev ? " 'unsafe-eval'" : ''}`,
+              `script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               // www.facebook.com is the Meta Pixel's <noscript> fallback pixel
               // and its tracking beacon endpoint.
-              `img-src 'self' data: blob: https://www.facebook.com${supabaseHostname ? ` https://${supabaseHostname}` : ''}`,
-              `connect-src 'self' https://www.facebook.com${isDev ? ' ws://localhost:* ws://127.0.0.1:*' : ''}`,
+              `img-src 'self' data: blob: https://www.facebook.com https://www.google-analytics.com https://www.googletagmanager.com${supabaseHostname ? ` https://${supabaseHostname}` : ''}`,
+              `connect-src 'self' https://www.facebook.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com${isDev ? ' ws://localhost:* ws://127.0.0.1:*' : ''}`,
               // TEMPORARY DIAGNOSTIC: form-action was blocking a POST to the
               // exact origin it explicitly allowed (https://www.payfast.co.za),
               // which shouldn't be possible under a normal same-origin source

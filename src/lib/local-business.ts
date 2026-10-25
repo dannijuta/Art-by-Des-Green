@@ -10,7 +10,22 @@ export const BUSINESS_PHONE_DISPLAY = '+27 83 524 4713';
 export const PUBLIC_LOCATION = 'East London (Gonubie), Eastern Cape';
 export const GOOGLE_REVIEW_URL = 'https://g.page/r/CfoSYIj0T4dgEBI/review';
 export const FACEBOOK_URL = 'https://www.facebook.com/artbydesj';
-export const INSTAGRAM_URL = 'https://www.instagram.com/artbydesj/';
+export const INSTAGRAM_URL = 'https://www.instagram.com/artbydesg/';
+export const INSTAGRAM_HANDLE = '@artbydesg';
+
+/** Public Instagram link. Rewrites the retired @artbydesj handle if the database still has it. */
+export function publicInstagramUrl(url?: string | null): string {
+  const value = url?.trim();
+  if (!value) return INSTAGRAM_URL;
+  return value.replaceAll('artbydesj', 'artbydesg');
+}
+
+/** Public Instagram handle. Rewrites the retired @artbydesj handle if the database still has it. */
+export function publicInstagramHandle(handle?: string | null): string {
+  const value = handle?.trim();
+  if (!value) return INSTAGRAM_HANDLE;
+  return value.replaceAll('artbydesj', 'artbydesg');
+}
 
 export const HOMEPAGE_TITLE = 'Art by Des Green | Original Oil Paintings, East London, Eastern Cape';
 export const HOMEPAGE_DESCRIPTION =
