@@ -30,7 +30,7 @@ insert into settings (key, value) values
   "phoneLink": "tel:+27835244713",
   "email": "djuta68@gmail.com",
   "emailLink": "mailto:djuta68@gmail.com",
-  "facebookUrl": "https://www.facebook.com/artbydesj",
+  "facebookUrl": "https://www.facebook.com/artbydesg",
   "facebookLabel": "Art by Des Green on Facebook",
   "instagramUrl": "https://www.instagram.com/artbydesg/",
   "instagramHandle": "@artbydesg",

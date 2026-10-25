@@ -13,6 +13,7 @@ import {
   PUBLIC_LOCATION,
   buildLocalBusinessJsonLd,
   formatPhoneDisplay,
+  publicFacebookUrl,
   publicInstagramHandle,
   publicInstagramUrl,
   serializeJsonLd,
@@ -61,7 +62,11 @@ test('JSON-LD describes an ArtGallery with no street address', () => {
   assert.equal(INSTAGRAM_HANDLE, '@artbydesg');
   assert.equal(publicInstagramUrl('https://www.instagram.com/artbydesj/'), INSTAGRAM_URL);
   assert.equal(publicInstagramHandle('@artbydesj'), INSTAGRAM_HANDLE);
-  assert.match(FACEBOOK_URL, /facebook\.com\/artbydesj$/);
+  assert.equal(FACEBOOK_URL, 'https://www.facebook.com/artbydesg');
+  assert.equal(publicFacebookUrl('https://www.facebook.com/artbydesj'), FACEBOOK_URL);
+  assert.equal(publicFacebookUrl('https://www.facebook.com/artbydesj/'), 'https://www.facebook.com/artbydesg/');
+  assert.equal(publicFacebookUrl(''), FACEBOOK_URL);
+  assert.equal(data.sameAs.some((url) => url.includes('artbydesj')), false);
   assert.deepEqual(data.sameAs, [FACEBOOK_URL, INSTAGRAM_URL, GOOGLE_REVIEW_URL]);
 
   const parsed = JSON.parse(serializeJsonLd(data));
