@@ -8,12 +8,16 @@ import {
   GOOGLE_REVIEW_URL,
   HOMEPAGE_DESCRIPTION,
   HOMEPAGE_TITLE,
+  INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
   PUBLIC_LOCATION,
   buildLocalBusinessJsonLd,
   formatPhoneDisplay,
+  publicInstagramHandle,
+  publicInstagramUrl,
   serializeJsonLd,
 } from '../src/lib/local-business.ts';
+import { DEFAULT_GA_MEASUREMENT_ID, googleAnalyticsId } from '../src/lib/google-analytics.ts';
 import { assessSubmitTiming, MIN_CONTACT_SUBMIT_MS } from '../src/lib/form-spam.ts';
 
 test('homepage title and description name the studio location', () => {
@@ -53,11 +57,37 @@ test('JSON-LD describes an ArtGallery with no street address', () => {
   );
   assert.equal(data.founder['@type'], 'Person');
   assert.equal(data.founder.name, 'Des Green');
+  assert.equal(INSTAGRAM_URL, 'https://www.instagram.com/artbydesg/');
+  assert.equal(INSTAGRAM_HANDLE, '@artbydesg');
+  assert.equal(publicInstagramUrl('https://www.instagram.com/artbydesj/'), INSTAGRAM_URL);
+  assert.equal(publicInstagramHandle('@artbydesj'), INSTAGRAM_HANDLE);
+  assert.match(FACEBOOK_URL, /facebook\.com\/artbydesj$/);
   assert.deepEqual(data.sameAs, [FACEBOOK_URL, INSTAGRAM_URL, GOOGLE_REVIEW_URL]);
 
   const parsed = JSON.parse(serializeJsonLd(data));
   assert.equal(parsed.name, 'Art By Des Green');
   assert.equal(parsed.url, 'https://artbydesgreen.co.za');
+});
+
+test('GA4 uses the built-in measurement ID unless a valid override is set', () => {
+  const previous = process.env.NEXT_PUBLIC_GA_ID;
+  try {
+    delete process.env.NEXT_PUBLIC_GA_ID;
+    assert.equal(DEFAULT_GA_MEASUREMENT_ID, 'G-T5YNPYRKC6');
+    assert.equal(googleAnalyticsId(), 'G-T5YNPYRKC6');
+    assert.equal(googleAnalyticsId(''), 'G-T5YNPYRKC6');
+    assert.equal(googleAnalyticsId('   '), 'G-T5YNPYRKC6');
+    assert.equal(googleAnalyticsId('not-an-id'), 'G-T5YNPYRKC6');
+    assert.equal(googleAnalyticsId('G-AB12CD34'), 'G-AB12CD34');
+
+    process.env.NEXT_PUBLIC_GA_ID = 'G-OVERRIDE1';
+    assert.equal(googleAnalyticsId(), 'G-OVERRIDE1');
+    process.env.NEXT_PUBLIC_GA_ID = 'not-an-id';
+    assert.equal(googleAnalyticsId(), 'G-T5YNPYRKC6');
+  } finally {
+    if (previous === undefined) delete process.env.NEXT_PUBLIC_GA_ID;
+    else process.env.NEXT_PUBLIC_GA_ID = previous;
+  }
 });
 
 test('contact form timing rejects instant, missing, and stale timestamps', () => {

@@ -32,8 +32,8 @@ insert into settings (key, value) values
   "emailLink": "mailto:djuta68@gmail.com",
   "facebookUrl": "https://www.facebook.com/artbydesj",
   "facebookLabel": "Art by Des Green on Facebook",
-  "instagramUrl": "https://www.instagram.com/artbydesj/",
-  "instagramHandle": "@artbydesj",
+  "instagramUrl": "https://www.instagram.com/artbydesg/",
+  "instagramHandle": "@artbydesg",
   "instagramLabel": "Art by Des Green on Instagram",
   "location": "East London, South Africa"
 }'::jsonb)
