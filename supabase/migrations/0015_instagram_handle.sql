@@ -1,7 +1,8 @@
 -- Instagram handle changed from @artbydesj to @artbydesg.
--- Only the Instagram URL and @handle are rewritten. The Facebook page
--- (facebook.com/artbydesj) is a different account and is left as it is.
--- The public site also rewrites these two fields when it reads settings, so
+-- Only the Instagram URL and @handle are rewritten here. The Facebook page
+-- move (facebook.com/artbydesj to facebook.com/artbydesg) is in
+-- 0016_facebook_page.sql.
+-- The public site also rewrites these fields when it reads settings, so
 -- the live pages update even if this migration has not been applied yet.
 
 update settings

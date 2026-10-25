@@ -9,9 +9,16 @@ export const BUSINESS_NAME = 'Art By Des Green';
 export const BUSINESS_PHONE_DISPLAY = '+27 83 524 4713';
 export const PUBLIC_LOCATION = 'East London (Gonubie), Eastern Cape';
 export const GOOGLE_REVIEW_URL = 'https://g.page/r/CfoSYIj0T4dgEBI/review';
-export const FACEBOOK_URL = 'https://www.facebook.com/artbydesj';
+export const FACEBOOK_URL = 'https://www.facebook.com/artbydesg';
 export const INSTAGRAM_URL = 'https://www.instagram.com/artbydesg/';
 export const INSTAGRAM_HANDLE = '@artbydesg';
+
+/** Public Facebook page. Rewrites the retired facebook.com/artbydesj path if the database still has it. */
+export function publicFacebookUrl(url?: string | null): string {
+  const value = url?.trim();
+  if (!value) return FACEBOOK_URL;
+  return value.replaceAll('facebook.com/artbydesj', 'facebook.com/artbydesg');
+}
 
 /** Public Instagram link. Rewrites the retired @artbydesj handle if the database still has it. */
 export function publicInstagramUrl(url?: string | null): string {

@@ -9,12 +9,14 @@ import type {
   SeoSettings,
 } from '@/types/domain';
 import {
+  FACEBOOK_URL,
   formatPhoneDisplay,
   HOMEPAGE_DESCRIPTION,
   HOMEPAGE_TITLE,
   INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
   PUBLIC_LOCATION,
+  publicFacebookUrl,
   publicInstagramHandle,
   publicInstagramUrl,
 } from '@/lib/local-business';
@@ -53,7 +55,7 @@ const FALLBACK_CONTACT: ContactSettings = {
   phoneLink: 'tel:+27835244713',
   email: 'djuta68@gmail.com',
   emailLink: 'mailto:djuta68@gmail.com',
-  facebookUrl: 'https://www.facebook.com/artbydesj',
+  facebookUrl: FACEBOOK_URL,
   facebookLabel: 'Art by Des Green on Facebook',
   instagramUrl: INSTAGRAM_URL,
   instagramHandle: INSTAGRAM_HANDLE,
@@ -105,6 +107,7 @@ export async function getContactSettings(): Promise<ContactSettings> {
   return {
     ...contact,
     phoneDisplay: formatPhoneDisplay(contact.phoneDisplay || contact.phoneLink),
+    facebookUrl: publicFacebookUrl(contact.facebookUrl),
     instagramUrl: publicInstagramUrl(contact.instagramUrl),
     instagramHandle: publicInstagramHandle(contact.instagramHandle),
   };
