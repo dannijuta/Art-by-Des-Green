@@ -57,7 +57,6 @@ export default async function CheckoutStartPage(props: PageProps<'/checkout/[slu
                 width={artwork.primaryImageWidth ?? 900}
                 height={artwork.primaryImageHeight ?? 1100}
                 className="h-auto w-full object-contain"
-                unoptimized
               />
             )}
           </div>

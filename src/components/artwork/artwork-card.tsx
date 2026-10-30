@@ -47,10 +47,9 @@ export function ArtworkCard({
               src={artworkThumbPath(artwork.primaryImagePath)}
               alt={artwork.altText || artwork.publicTitle}
               fill
-              sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+              sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
               className="object-contain drop-shadow-[0_6px_14px_rgba(42,36,30,0.18)] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
               priority={priority}
-              unoptimized
             />
           </div>
         )}

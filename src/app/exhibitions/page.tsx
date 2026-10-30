@@ -24,7 +24,6 @@ function ExhibitionItem({ ex, past = false }: { ex: Exhibition; past?: boolean }
             fill
             sizes="(min-width: 640px) 30vw, 92vw"
             className={`object-cover ${past ? 'opacity-90' : ''}`}
-            unoptimized
           />
         </div>
       ) : (

@@ -40,7 +40,6 @@ export function Hero({ hero, copy }: { hero: Artwork | null; copy: HomepageCopyS
                   sizes="(min-width: 1024px) 50vw, 92vw"
                   className="object-contain drop-shadow-[0_18px_30px_rgba(42,36,30,0.28)]"
                   priority
-                  unoptimized
                 />
               </div>
             </div>
