@@ -11,6 +11,39 @@ import { artworkThumbPath } from '@/lib/image-paths';
 
 const initialState: ArtworkFormState = { status: 'idle' };
 
+// Vercel rejects request bodies over ~4.5MB before the server ever sees them,
+// so large phone photos would make the whole save fail. Shrink big images in
+// the browser first (the server resizes again for the web anyway). Any
+// failure leaves the original file untouched.
+const MAX_CLIENT_UPLOAD_BYTES = 3.5 * 1024 * 1024;
+const CLIENT_MAX_DIMENSION = 3000;
+
+async function shrinkImageInput(input: HTMLInputElement) {
+  const file = input.files?.[0];
+  if (!file || file.size <= MAX_CLIENT_UPLOAD_BYTES || !file.type.startsWith('image/')) return;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, CLIENT_MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    let blob: Blob | null = null;
+    for (const quality of [0.9, 0.8, 0.7, 0.6]) {
+      blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+      if (blob && blob.size <= MAX_CLIENT_UPLOAD_BYTES) break;
+    }
+    if (!blob || blob.size >= file.size) return;
+    const name = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+    const transfer = new DataTransfer();
+    transfer.items.add(new File([blob], name, { type: 'image/jpeg' }));
+    input.files = transfer.files;
+  } catch {
+    // Leave the original file; the server will report if it's too large.
+  }
+}
+
 export function ArtworkForm({
   artwork,
   categories,
@@ -167,6 +200,7 @@ export function ArtworkForm({
           type="file"
           accept="image/jpeg,image/png,image/webp"
           required={!artwork}
+          onChange={(e) => void shrinkImageInput(e.currentTarget)}
           className="block w-full text-sm text-charcoal-soft file:mr-4 file:border file:border-border file:bg-cream file:px-3 file:py-2 file:text-sm file:text-charcoal"
         />
         {!artwork && (
@@ -176,6 +210,12 @@ export function ArtworkForm({
 
       {state.status === 'error' && state.message && (
         <p role="alert" className="border border-burgundy/30 bg-burgundy/5 px-4 py-3 text-sm text-burgundy">
+          {state.message}
+        </p>
+      )}
+
+      {state.status === 'saved' && state.message && !pending && (
+        <p role="status" className="border border-border-soft bg-parchment px-4 py-3 text-sm text-charcoal">
           {state.message}
         </p>
       )}
