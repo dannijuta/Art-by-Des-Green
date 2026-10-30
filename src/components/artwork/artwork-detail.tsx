@@ -43,7 +43,6 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
               sizes={compact ? '90vw' : '(min-width: 1024px) 55vw, 92vw'}
               className={`mx-auto h-auto object-contain ${compact ? 'w-full' : 'max-h-[50vh] w-auto max-w-full drop-shadow sm:max-h-[78vh]-[0_14px_26px_rgba(42,36,30,0.25)]'}`}
               priority
-              unoptimized
             />
           )}
         </div>

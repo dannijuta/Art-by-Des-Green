@@ -50,7 +50,6 @@ export default async function AdminArtworksPage(props: PageProps<'/admin/artwork
                         fill
                         sizes="48px"
                         className="object-cover"
-                        unoptimized
                       />
                     </div>
                   )}

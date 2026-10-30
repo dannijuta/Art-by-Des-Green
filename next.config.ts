@@ -8,6 +8,9 @@ const supabaseHostname = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE
 
 const nextConfig: NextConfig = {
   images: {
+    // Supabase-hosted images go through Supabase's own transforms (see loader).
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
     // A single quality tier keeps every image request on the site sharing
     // the same cached variants — Vercel's free image-optimization quota is
     // billed per distinct (url, width, quality) combination, and a second
@@ -24,7 +27,7 @@ const nextConfig: NextConfig = {
     // 2x pixel density that tops out well under 2000px. Trimmed to five
     // sensible breakpoints instead of the default eight.
     deviceSizes: [640, 828, 1080, 1200, 1920],
-    imageSizes: [64, 96, 128, 256],
+    imageSizes: [64, 96, 128, 256, 384],
     formats: ['image/avif', 'image/webp'],
     remotePatterns: supabaseHostname
       ? [{ protocol: 'https', hostname: supabaseHostname, pathname: '/storage/v1/object/public/**' }]
