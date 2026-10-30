@@ -6,6 +6,8 @@ import { SectionHeading } from '@/components/ui/section-heading';
 import { FacebookIcon, InstagramIcon, MailIcon, PhoneIcon } from '@/components/icons/social';
 import { GOOGLE_REVIEW_URL, PUBLIC_LOCATION } from '@/lib/local-business';
 import { captureFormRenderedAt } from '@/lib/form-spam';
+import { WhatsAppLink } from '@/components/whatsapp-link';
+import { whatsappLink } from '@/lib/whatsapp';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -45,6 +47,17 @@ export default async function ContactPage(props: PageProps<'/contact'>) {
                   <a href={contact.phoneLink} className="inline-flex items-center gap-2 text-charcoal hover:text-clay-dark">
                     <PhoneIcon className="h-4 w-4" /> {contact.phoneDisplay}
                   </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-charcoal-soft">WhatsApp</dt>
+                <dd>
+                  <WhatsAppLink
+                    href={whatsappLink('Hi Des, I found your website and have a question about your paintings.')}
+                    label="Message Des on WhatsApp"
+                    placement="contact"
+                    className="inline-flex items-center gap-2 text-charcoal hover:text-clay-dark"
+                  />
                 </dd>
               </div>
               <div>

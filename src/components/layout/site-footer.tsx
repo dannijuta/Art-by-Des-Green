@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { ArtistProfileSettings, ContactSettings } from '@/types/domain';
 import { FacebookIcon, InstagramIcon, MailIcon } from '@/components/icons/social';
 import { GOOGLE_REVIEW_URL, PUBLIC_LOCATION } from '@/lib/local-business';
+import { WhatsAppLink } from '@/components/whatsapp-link';
+import { whatsappLink } from '@/lib/whatsapp';
 
 export function SiteFooter({
   artist,
@@ -49,6 +51,14 @@ export function SiteFooter({
               >
                 {contact.phoneDisplay}
               </a>
+            </li>
+            <li>
+              <WhatsAppLink
+                href={whatsappLink()}
+                label="WhatsApp"
+                placement="footer"
+                className="inline-flex items-center gap-2 hover:text-clay-dark"
+              />
             </li>
             <li>
               <a href={contact.emailLink} className="inline-flex items-center gap-2 hover:text-clay-dark">
