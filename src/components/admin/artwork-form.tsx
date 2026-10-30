@@ -180,6 +180,12 @@ export function ArtworkForm({
         </p>
       )}
 
+      {state.status === 'saved' && state.message && !pending && (
+        <p role="status" className="border border-border-soft bg-parchment px-4 py-3 text-sm text-charcoal">
+          {state.message}
+        </p>
+      )}
+
       <Button type="submit" disabled={pending}>
         {pending ? 'Saving…' : 'Save Artwork'}
       </Button>

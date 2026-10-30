@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { artworkAdminSchema } from '@/lib/validation';
@@ -9,7 +10,7 @@ import { uploadArtworkImage } from '@/lib/storage';
 import { randToCents } from '@/lib/money';
 
 export interface ArtworkFormState {
-  status: 'idle' | 'error';
+  status: 'idle' | 'error' | 'saved';
   message?: string;
   fieldErrors?: Record<string, string>;
 }
@@ -154,7 +155,10 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
       }
     }
 
-    return { status: 'idle' };
+    // Make sure the public pages (and the admin list) pick the change up
+    // straight away rather than serving an earlier render.
+    revalidatePath('/', 'layout');
+    return { status: 'saved', message: 'Saved. The change is now live on the website.' };
   }
 
   const nextRank = await query<{ max: number | null }>('select max(rank) as max from artworks');
@@ -201,6 +205,7 @@ async function saveArtwork(id: string | null, formData: FormData): Promise<Artwo
     inserted.rows[0].id,
   ]);
 
+  revalidatePath('/', 'layout');
   redirect(`/admin/artworks/${inserted.rows[0].id}/edit`);
 }
 
@@ -221,6 +226,7 @@ export async function archiveArtworkAction(id: string) {
     'artwork',
     id,
   ]);
+  revalidatePath('/', 'layout');
 }
 
 export async function deleteArtworkAction(id: string) {
