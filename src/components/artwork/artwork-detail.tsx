@@ -31,9 +31,9 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
   const payfastLive = isPayfastLive();
 
   return (
-    <div className={compact ? 'grid gap-6' : 'grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-16'}>
+    <div className={compact ? 'grid gap-6' : 'grid gap-7 sm:gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-16'}>
       <div className="relative">
-        <div className={`relative w-full overflow-hidden bg-parchment ${compact ? '' : 'p-[5%] sm:p-[6%]'}`}>
+        <div className={`relative w-full overflow-hidden bg-parchment ${compact ? '' : 'p-[4%] sm:p-[6%]'}`}>
           {artwork.primaryImagePath && (
             <Image
               src={artwork.primaryImagePath}
@@ -41,8 +41,8 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
               width={artwork.primaryImageWidth ?? 1200}
               height={artwork.primaryImageHeight ?? 1400}
               sizes={compact ? '90vw' : '(min-width: 1024px) 55vw, 92vw'}
-              className={`mx-auto h-auto object-contain ${compact ? 'w-full' : 'max-h-[78vh] w-auto max-w-full drop-shadow-[0_14px_26px_rgba(42,36,30,0.25)]'}`}
-              priority={compact}
+              className={`mx-auto h-auto object-contain ${compact ? 'w-full' : 'max-h-[58vh] w-auto max-w-full drop-shadow sm:max-h-[78vh]-[0_14px_26px_rgba(42,36,30,0.25)]'}`}
+              priority
               unoptimized
             />
           )}
@@ -63,23 +63,15 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         {isPurchasable && artwork.priceCents !== null && (
           <p className="mt-4 text-2xl text-clay-dark">{formatZAR(artwork.priceCents)}</p>
         )}
+        {artwork.widthCm && artwork.heightCm && (
+          <p className="mt-2 text-sm tracking-wide text-charcoal-soft">
+            {artwork.widthCm} × {artwork.heightCm} cm{artwork.medium ? ` · ${artwork.medium}` : ''}
+            {artwork.surface ? ` on ${artwork.surface.toLowerCase()}` : ''}
+          </p>
+        )}
         {message && <p className="mt-4 text-sm text-charcoal-soft">{message}</p>}
 
-        <div className="mt-6">
-          <SpecsList artwork={artwork} />
-        </div>
-
-        {(artwork.signed !== null || artwork.varnished !== null || artwork.certificateOfAuthenticity !== null) && (
-          <div className="mt-4">
-            <TrustFacts artwork={artwork} />
-          </div>
-        )}
-
-        {artwork.publicDescription && (
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-soft">{artwork.publicDescription}</p>
-        )}
-
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-6 flex flex-wrap gap-3 sm:gap-4">
           {isPurchasable ? (
             <LinkButton href={`/checkout/${artwork.slug}`} variant="primary">
               {payfastLive ? 'Acquire This Artwork' : 'Request to Purchase'}
@@ -104,7 +96,7 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
           }
           placement="artwork"
           artworkTitle={artwork.publicTitle}
-          className="mt-5 inline-flex items-center gap-2.5 border border-[#1f7a4d]/35 bg-cream px-5 py-2.5 text-sm tracking-wide text-[#1f6b45] transition-colors hover:border-[#1f7a4d] hover:bg-[#1f7a4d] hover:text-cream"
+          className="mt-4 inline-flex items-center gap-2.5 border border-[#1f7a4d]/35 bg-cream px-5 py-2.5 text-sm tracking-wide text-[#1f6b45] transition-colors hover:border-[#1f7a4d] hover:bg-[#1f7a4d] hover:text-cream"
         />
 
         {isPurchasable && (
@@ -113,6 +105,20 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
               ? 'Secure payment through PayFast. No card details are stored on this website.'
               : 'Payment will be arranged securely once your shipping or collection details have been confirmed.'}
           </p>
+        )}
+
+        <div className="mt-8 border-t border-border-soft pt-6">
+          <SpecsList artwork={artwork} />
+        </div>
+
+        {(artwork.signed !== null || artwork.varnished !== null || artwork.certificateOfAuthenticity !== null) && (
+          <div className="mt-4">
+            <TrustFacts artwork={artwork} />
+          </div>
+        )}
+
+        {artwork.publicDescription && (
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-soft">{artwork.publicDescription}</p>
         )}
 
         {!compact && (
