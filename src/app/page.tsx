@@ -47,7 +47,7 @@ export default async function HomePage() {
               </Link>
             }
           />
-          <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 sm:gap-x-8 lg:grid-cols-4">
             {featured.map((artwork, i) => (
               <ArtworkCard key={artwork.id} artwork={artwork} priority={i === 0} />
             ))}

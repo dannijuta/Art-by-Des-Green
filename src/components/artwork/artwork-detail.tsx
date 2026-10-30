@@ -29,16 +29,17 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
   const payfastLive = isPayfastLive();
 
   return (
-    <div className={compact ? 'grid gap-6' : 'grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14'}>
+    <div className={compact ? 'grid gap-6' : 'grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-16'}>
       <div className="relative">
-        <div className="relative w-full overflow-hidden bg-parchment">
+        <div className={`relative w-full overflow-hidden bg-parchment ${compact ? '' : 'p-[5%] sm:p-[6%]'}`}>
           {artwork.primaryImagePath && (
             <Image
               src={artwork.primaryImagePath}
               alt={artwork.altText || artwork.publicTitle}
               width={artwork.primaryImageWidth ?? 1200}
               height={artwork.primaryImageHeight ?? 1400}
-              className="h-auto w-full object-contain"
+              sizes={compact ? '90vw' : '(min-width: 1024px) 55vw, 92vw'}
+              className={`mx-auto h-auto object-contain ${compact ? 'w-full' : 'max-h-[78vh] w-auto max-w-full drop-shadow-[0_14px_26px_rgba(42,36,30,0.25)]'}`}
               priority={compact}
               unoptimized
             />
@@ -49,11 +50,11 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         </div>
       </div>
 
-      <div>
+      <div className={compact ? '' : 'lg:sticky lg:top-28 lg:pt-4'}>
         {artwork.category && (
-          <p className="text-xs tracking-[0.2em] text-clay-dark">{artwork.category.name.toUpperCase()}</p>
+          <p className="text-[0.7rem] tracking-[0.28em] text-clay-dark">{artwork.category.name.toUpperCase()}</p>
         )}
-        <h1 className={`mt-2 font-serif text-charcoal ${compact ? 'text-2xl' : 'text-3xl sm:text-4xl'}`}>
+        <h1 className={`mt-3 font-serif leading-tight text-charcoal ${compact ? 'text-2xl' : 'text-3xl sm:text-[2.6rem]'}`}>
           {artwork.publicTitle}
         </h1>
 

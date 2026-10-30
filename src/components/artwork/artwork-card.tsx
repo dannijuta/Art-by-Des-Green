@@ -17,8 +17,6 @@ export function ArtworkCard({
   priority?: boolean;
   onOpen?: (e: React.MouseEvent) => void;
 }) {
-  const width = artwork.primaryImageWidth ?? 1000;
-  const height = artwork.primaryImageHeight ?? 1200;
 
   // Every click on an artwork thumbnail — whether it opens the lightbox
   // (gallery/available-works) or navigates straight to the artwork page
@@ -40,34 +38,33 @@ export function ArtworkCard({
     <Link
       href={`/artwork/${artwork.slug}`}
       onClick={handleClick}
-      className="group mb-6 block break-inside-avoid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+      className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay"
     >
-      <div className="relative overflow-hidden bg-parchment">
+      <div className="relative aspect-[4/5] overflow-hidden bg-parchment/70 transition-colors duration-500 group-hover:bg-parchment">
         {artwork.primaryImagePath && (
-          <Image
-            src={artworkThumbPath(artwork.primaryImagePath)}
-            alt={artwork.altText || artwork.publicTitle}
-            width={width}
-            height={height}
-            className="h-auto w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.015]"
-            priority={priority}
-            unoptimized
-          />
+          <div className="absolute inset-[7%]">
+            <Image
+              src={artworkThumbPath(artwork.primaryImagePath)}
+              alt={artwork.altText || artwork.publicTitle}
+              fill
+              sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+              className="object-contain drop-shadow-[0_6px_14px_rgba(42,36,30,0.18)] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+              priority={priority}
+              unoptimized
+            />
+          </div>
         )}
         <div className="absolute left-3 top-3">
           <AvailabilityBadge status={artwork.availabilityStatus} isNew={artwork.isNew} />
         </div>
-        <div className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-charcoal/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
-          <div className="p-4 text-cream">
-            <p className="font-serif text-lg italic">{artwork.publicTitle}</p>
-          </div>
-        </div>
       </div>
-      <div className="mt-3 flex items-baseline justify-between gap-3">
-        <div>
-          <p className="font-serif text-base text-charcoal">{artwork.publicTitle}</p>
+      <div className="mt-4 flex items-baseline justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate font-serif text-[1.05rem] text-charcoal transition-colors group-hover:text-clay-dark">
+            {artwork.publicTitle}
+          </p>
           {artwork.widthCm && artwork.heightCm && (
-            <p className="mt-0.5 text-xs text-charcoal-soft">
+            <p className="mt-1 text-xs tracking-wide text-charcoal-soft">
               {artwork.widthCm} × {artwork.heightCm} cm
             </p>
           )}

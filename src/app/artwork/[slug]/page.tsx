@@ -111,7 +111,7 @@ export default async function ArtworkPage(props: PageProps<'/artwork/[slug]'>) {
       {related.length > 0 && (
         <section className="mt-20 border-t border-border-soft pt-12">
           <SectionHeading title="Related Works" />
-          <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 sm:gap-x-8 md:grid-cols-4">
             {related.map((r) => (
               <ArtworkCard key={r.id} artwork={r} />
             ))}
