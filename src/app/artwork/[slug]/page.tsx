@@ -85,7 +85,7 @@ export default async function ArtworkPage(props: PageProps<'/artwork/[slug]'>) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-5 pb-14 pt-6 sm:px-8 sm:py-14">
+    <div className="mx-auto max-w-7xl px-5 pb-14 pt-4 sm:px-8 sm:py-14">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(visualArtworkJsonLd) }}
