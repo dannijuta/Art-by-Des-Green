@@ -19,7 +19,7 @@ export function GalleryGrid({ artworks }: { artworks: Artwork[] }) {
 
   return (
     <>
-      <div className="columns-2 gap-6 sm:columns-2 md:columns-3 lg:columns-4">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:gap-x-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-y-14">
         {artworks.map((artwork, i) => (
           <ArtworkCard
             key={artwork.id}

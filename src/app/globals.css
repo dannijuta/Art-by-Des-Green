@@ -74,6 +74,9 @@ body {
   background: var(--color-ivory);
   color: var(--color-charcoal);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   /* The off-canvas mobile nav panel is translated off-screen rather than
      unmounted, so without this the browser still counts its translated
      bounds toward the page's scrollable width. */
@@ -108,4 +111,14 @@ h4 {
 :focus-visible {
   outline: 2px solid var(--color-clay);
   outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-clay) 25%, transparent);
 }
