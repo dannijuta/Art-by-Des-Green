@@ -156,7 +156,7 @@ export async function listPublishedArtworks(filters: GalleryFilters = {}): Promi
     clauses.push(`(a.public_title ILIKE $${params.length} OR a.working_description ILIKE $${params.length})`);
   }
 
-  const sql = `${BASE_SELECT} where ${clauses.join(' and ')} order by coalesce(a.display_order, a.rank) asc`;
+  const sql = `${BASE_SELECT} where ${clauses.join(' and ')} order by a.is_new desc, case when a.is_new then a.rank end desc nulls last, coalesce(a.display_order, a.rank) asc`;
   const { rows } = await query<ArtworkRow>(sql, params);
   return rows.map((r) => toPublicArtwork(mapRow(r)));
 }
