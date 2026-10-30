@@ -167,7 +167,7 @@ export function ArtworkForm({
           Use as homepage hero
         </label>
         <label className="flex items-center gap-2 text-sm text-charcoal">
-          <input type="checkbox" name="isNew" defaultChecked={artwork?.isNew} className="h-4 w-4 accent-clay" />
+          <input type="checkbox" name="isNew" defaultChecked={artwork ? artwork.isNew : true} className="h-4 w-4 accent-clay" />
           Show &ldquo;New&rdquo; badge
         </label>
       </div>
