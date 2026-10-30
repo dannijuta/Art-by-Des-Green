@@ -35,6 +35,7 @@ export function SiteFooter({
             {showSoldWork && (
               <li><Link href="/sold-work" className="hover:text-clay-dark">Sold Work</Link></li>
             )}
+            <li><Link href="/exhibitions" className="hover:text-clay-dark">Exhibitions</Link></li>
             <li><Link href="/contact" className="hover:text-clay-dark">Contact</Link></li>
           </ul>
         </nav>

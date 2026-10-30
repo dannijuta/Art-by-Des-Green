@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/gallery',
     '/available-works',
     '/sold-work',
+    '/exhibitions',
     '/meet-the-artist',
     '/commissions',
     '/contact',

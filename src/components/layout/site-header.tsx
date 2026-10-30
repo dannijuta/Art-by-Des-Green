@@ -10,6 +10,7 @@ const BASE_NAV_LINKS = [
   { href: '/meet-the-artist', label: 'About the Artist' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/available-works', label: 'Available Works' },
+  { href: '/exhibitions', label: 'Exhibitions' },
   { href: '/contact', label: 'Contact' },
 ];
 const SOLD_WORK_LINK = { href: '/sold-work', label: 'Sold Work' };
