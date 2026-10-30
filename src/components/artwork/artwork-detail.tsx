@@ -31,9 +31,9 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
   const payfastLive = isPayfastLive();
 
   return (
-    <div className={compact ? 'grid gap-6' : 'grid gap-7 sm:gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-16'}>
+    <div className={compact ? 'grid gap-6' : 'grid gap-5 sm:gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-16'}>
       <div className="relative">
-        <div className={`relative w-full overflow-hidden bg-parchment ${compact ? '' : 'p-[4%] sm:p-[6%]'}`}>
+        <div className={`relative w-full overflow-hidden bg-parchment ${compact ? '' : 'p-[2.5%] sm:p-[6%]'}`}>
           {artwork.primaryImagePath && (
             <Image
               src={artwork.primaryImagePath}
@@ -56,12 +56,12 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         {artwork.category && (
           <p className="text-[0.7rem] tracking-[0.28em] text-clay-dark">{artwork.category.name.toUpperCase()}</p>
         )}
-        <h1 className={`mt-3 font-serif leading-tight text-charcoal ${compact ? 'text-2xl' : 'text-3xl sm:text-[2.6rem]'}`}>
+        <h1 className={`mt-2 font-serif leading-tight sm:mt-3 text-charcoal ${compact ? 'text-2xl' : 'text-3xl sm:text-[2.6rem]'}`}>
           {artwork.publicTitle}
         </h1>
 
         {isPurchasable && artwork.priceCents !== null && (
-          <p className="mt-4 text-2xl text-clay-dark">{formatZAR(artwork.priceCents)}</p>
+          <p className="mt-2 text-2xl text-clay-dark sm:mt-4">{formatZAR(artwork.priceCents)}</p>
         )}
         {artwork.widthCm && artwork.heightCm && (
           <p className="mt-2 text-sm tracking-wide text-charcoal-soft">
@@ -71,7 +71,7 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
         )}
         {message && <p className="mt-4 text-sm text-charcoal-soft">{message}</p>}
 
-        <div className="mt-6 flex flex-wrap gap-3 sm:gap-4">
+        <div className="mt-5 flex flex-wrap gap-3 sm:mt-6 sm:gap-4">
           {isPurchasable ? (
             <LinkButton href={`/checkout/${artwork.slug}`} variant="primary">
               {payfastLive ? 'Acquire This Artwork' : 'Request to Purchase'}
@@ -96,7 +96,7 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
           }
           placement="artwork"
           artworkTitle={artwork.publicTitle}
-          className="mt-4 inline-flex items-center gap-2.5 border border-[#1f7a4d]/35 bg-cream px-5 py-2.5 text-sm tracking-wide text-[#1f6b45] transition-colors hover:border-[#1f7a4d] hover:bg-[#1f7a4d] hover:text-cream"
+          className="mt-3 inline-flex items-center gap-2.5 sm:mt-4 border border-[#1f7a4d]/35 bg-cream px-5 py-2.5 text-sm tracking-wide text-[#1f6b45] transition-colors hover:border-[#1f7a4d] hover:bg-[#1f7a4d] hover:text-cream"
         />
 
         {isPurchasable && (
