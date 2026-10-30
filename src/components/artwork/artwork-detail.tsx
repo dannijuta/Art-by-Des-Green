@@ -7,6 +7,8 @@ import { SpecsList } from './specs-list';
 import { TrustFacts } from './trust-facts';
 import { AvailabilityBadge } from './availability-badge';
 import { LinkButton } from '@/components/ui/button';
+import { WhatsAppLink } from '@/components/whatsapp-link';
+import { artworkWhatsappMessage, whatsappLink } from '@/lib/whatsapp';
 
 function statusMessage(artwork: Artwork): string | null {
   switch (artwork.availabilityStatus) {
@@ -90,6 +92,20 @@ export function ArtworkDetail({ artwork, compact = false }: { artwork: Artwork; 
             Private Enquiry
           </LinkButton>
         </div>
+
+        <WhatsAppLink
+          href={whatsappLink(
+            artworkWhatsappMessage(artwork.publicTitle, artwork.slug, artwork.availabilityStatus === 'sold')
+          )}
+          label={
+            artwork.availabilityStatus === 'sold'
+              ? 'Ask about similar work on WhatsApp'
+              : 'Ask about this painting on WhatsApp'
+          }
+          placement="artwork"
+          artworkTitle={artwork.publicTitle}
+          className="mt-5 inline-flex items-center gap-2.5 border border-[#1f7a4d]/35 bg-cream px-5 py-2.5 text-sm tracking-wide text-[#1f6b45] transition-colors hover:border-[#1f7a4d] hover:bg-[#1f7a4d] hover:text-cream"
+        />
 
         {isPurchasable && (
           <p className="mt-4 text-xs text-charcoal-soft">
