@@ -166,7 +166,9 @@ export async function listAvailableWorks(): Promise<Artwork[]> {
     where a.publishing_status = 'published'
       and a.availability_status = 'available'
       and a.price_cents is not null
-    order by coalesce(a.display_order, a.rank) asc`;
+    -- Works flagged "New" lead the page, newest (highest rank) first; the rest
+    -- keep the curated order.
+    order by a.is_new desc, case when a.is_new then a.rank end desc nulls last, coalesce(a.display_order, a.rank) asc`;
   const { rows } = await query<ArtworkRow>(sql);
   return rows.map((r) => toPublicArtwork(mapRow(r)));
 }
